@@ -1,19 +1,44 @@
 import React from "react";
 import { useAppContext } from "../context/AppContext";
 import { assets } from "../assets/assets";
+import { useEffect } from "react";
 const ProductCard = ({ product }) => {
-  const { currency, cartItems, addToCart, removeItem } = useAppContext();
+  const {
+    currency,
+    cartItems,
 
+    fetchCart,
+    removeItem,
+    navigate,
+    addToCartAPI,
+  } = useAppContext();
+
+  console.log(cartItems);
+  useEffect(() => {
+    fetchCart();
+  }, []);
   return (
     product && (
-      <div className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
+      <div
+        onClick={() =>
+          navigate(
+            `/products/${product.category?.toLowerCase()}/${product._id}`
+          )
+        }
+        className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full"
+      >
         <div className="group cursor-pointer flex items-center justify-center px-2">
           <img
             className="group-hover:scale-105 transition max-w-26 md:max-w-36"
-            src={product.image?.[0]}
+            src={
+              product.images && product.images.length > 0
+                ? product.images[0]
+                : "/placeholder.png"
+            }
             alt={product.name}
           />
         </div>
+
         <div className="text-gray-500/60 text-sm">
           <p>{product.category}</p>
           <p className="text-gray-700 font-medium text-lg truncate w-full">
@@ -32,18 +57,30 @@ const ProductCard = ({ product }) => {
               ))}
             <p>(4)</p>
           </div>
+
           <div className="flex items-end justify-between mt-3">
             <p className="md:text-xl text-base font-medium text-green-500">
-              {currency}${product.offerPrice}{" "}
-              <span className="text-gray-500/60 md:text-sm text-xs line-through">
-                {currency}${product.price}
-              </span>
+              {currency}
+              {product.offerPrice || product.price}{" "}
+              {product.offerPrice && (
+                <span className="text-gray-500/60 md:text-sm text-xs line-through">
+                  {currency}
+                  {product.price}
+                </span>
+              )}
             </p>
+
             <div className="text-green-500">
-              {!cartItems[product._id] ? (
+              {Array.isArray(cartItems) &&
+              !cartItems.some(
+                (item) => item?.product_id?._id === product._id
+              ) ? (
                 <button
                   className="flex items-center justify-center gap-1 bg-green-100 border border-green-300 cursor-pointer md:w-[80px] w-[64px] h-[34px] rounded"
-                  onClick={() => addToCart(product._id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCartAPI(product._id, 1);
+                  }}
                 >
                   <img src={assets.cart_icon} alt="cart" />
                   Add
@@ -51,7 +88,10 @@ const ProductCard = ({ product }) => {
               ) : (
                 <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-green-500/25 rounded select-none">
                   <button
-                    onClick={() => removeItem(product._id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeItem(product._id);
+                    }}
                     className="cursor-pointer text-md px-2 h-full"
                   >
                     -
@@ -60,7 +100,10 @@ const ProductCard = ({ product }) => {
                     {cartItems[product._id]}
                   </span>
                   <button
-                    onClick={() => addToCart(product._id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCartAPI(product._id);
+                    }}
                     className="cursor-pointer text-md px-2 h-full"
                   >
                     +

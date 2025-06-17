@@ -3,3 +3,9 @@
 * {
   font-family: "Nunito Sans", sans-serif;
 }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* @theme {
+  --color-primary: #a5be00;
+} */

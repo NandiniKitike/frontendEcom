@@ -2,28 +2,56 @@ import React from "react";
 import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
+import { useEffect } from "react";
+
 const Navbar = () => {
   console.log("rendered");
   const [open, setOpen] = React.useState(false);
-  const { user, setUser, setShowUserLogin, navigate } = useAppContext();
+
+  const {
+    user,
+    setUser,
+    setShowUserLogin,
+    navigate,
+    searchQuery,
+    loadingUser,
+    // loadingAdmin,
+    setSearchQuery,
+    // fetchCart,
+
+    count,
+  } = useAppContext();
   const logout = async () => {
     setUser(null);
     navigate("/");
   };
+
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      navigate("/products");
+    }
+  }, [searchQuery, navigate]);
+
+  if (loadingUser) return null;
+
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
-      <Link ti="/">
+      <Link to="/">
         <img className="h-9" src={assets.logo} alt="logo" />
       </Link>
 
       {/* Desktop Menu */}
       <div className="hidden sm:flex items-center gap-8">
-        <Link href="#">Home</Link>
-        <Link href="#">All Products</Link>
-        <Link href="#">Contect</Link>
+        <Link to="/">Home</Link>
+        <Link to="/products">All Products</Link>
+        <Link to="/contact">Contact</Link>
 
         <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
           <input
+            onChange={(e) => {
+              console.log("Input changed:", e.target.value);
+              setSearchQuery(e.target.value);
+            }}
             className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
             type="text"
             placeholder="Search products"
@@ -35,32 +63,35 @@ const Navbar = () => {
           onClick={() => navigate("/cart")}
           className="relative cursor-pointer"
         >
-          <img className="w-4" src={assets.cart_icon} alt="cart" />
-          <button className="absolute -top-2 -right-3 text-xs text-white bg-green-500 w-[16px] h-[16px] rounded-full">
-            3
-          </button>
+          <div className="relative cursor-pointer">
+            <img className="w-6" src={assets.cart_icon} alt="cart" />
+            <button className="absolute -top-2 -right-3 text-xs text-white bg-green-500 w-[18px] h-[16px] rounded-full">
+              {count || 0}
+            </button>
+          </div>
         </div>
 
         {!user ? (
           <button
             onClick={() => setShowUserLogin(true)}
-            className="cursor-pointer px-8 py-2 bg-green-500 hover:bg-green-600 transition text-white rounded-full"
+            // className="cursor-pointer px-8 py-2 bg-green hover:bg-green transition text-black rounded-full"
+            className="group flex items-center gap-2 px-1 md:px-9 py-3 bg-green-500 rounded-full hover:bg-green-600 transition text-white cursor-pointer"
           >
             Login
           </button>
         ) : (
           <div className="relative group">
-            <img src={assets.profile_icon} className="w-10" alt="" />
-            <ul className="hidden group-hover:block absolute top-10 rigt-0 bg-white shadow border border-gray-200 py-2.5 w-30 rounded-md text-sm z-40">
+            <img src={assets.profile_icon} className="w-10" alt="profile" />
+            <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow border border-gray-200 py-2.5 w-30 rounded-md text-sm z-40">
               <li
-                onClick={() => navigate("my-orders")}
-                className="p-1.5 pl-3 hover:green-300 cursor-pointer"
+                onClick={() => navigate("/my-orders")}
+                className="p-1.5 pl-3 hover:primary-300 cursor-pointer"
               >
                 My Orders
               </li>
               <li
                 onClick={logout}
-                className="p-1.5 pl-3 hover:green-300 cursor-pointer"
+                className="p-1.5 pl-3 hover:primary-300 cursor-pointer"
               >
                 Logout
               </li>
@@ -68,15 +99,26 @@ const Navbar = () => {
           </div>
         )}
       </div>
+      <div className="flex  gap-6 sm:hidden">
+        <div
+          onClick={() => navigate("/cart")}
+          className="relative cursor-pointer"
+        >
+          <img className="w-4" src={assets.cart_icon} alt="cart" />
+          <button className="absolute -top-2 -right-3 text-xs text-black bg-primary w-[16px] h-[16px] rounded-full">
+            {count}{" "}
+          </button>
+        </div>
 
-      <button
-        onClick={() => (open ? setOpen(false) : setOpen(true))}
-        aria-label="Menu"
-        className="sm:hidden"
-      >
-        {/* Menu Icon SVG */}
-        <img src={assets.menu_icon} alt="menu" />
-      </button>
+        <button
+          onClick={() => (open ? setOpen(false) : setOpen(true))}
+          aria-label="Menu"
+          className=""
+        >
+          {/* Menu Icon SVG */}
+          <img src={assets.menu_icon} alt="menu" />
+        </button>
+      </div>
 
       {/* Mobile Menu */}
       {open && (
@@ -93,14 +135,18 @@ const Navbar = () => {
           >
             Home
           </Link>
-          <Link to="/" onClick={() => setOpen(false)}>
-            All Products
+          <Link to="/products" onClick={() => setOpen(false)}>
+            <button> All Products</button>
           </Link>
-          <Link to="/" onClick={() => setOpen(false)}>
+          <Link to="/contact" onClick={() => setOpen(false)}>
             contact
           </Link>
           {user && (
-            <Link to="/" onClick={() => setOpen(false)}>
+            <Link
+              to="/my-orders"
+              onClick={() => setOpen(false)}
+              className="hover:border-b-2 hover:border-primary hover:text-primary transition duration-200"
+            >
               my orders
             </Link>
           )}
@@ -108,16 +154,21 @@ const Navbar = () => {
             <button
               onClick={() => {
                 setOpen(false);
-                setOpen(false);
                 setShowUserLogin(true);
               }}
-              className="cursor-pointer px-6 py-2 mt-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm"
+              className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-indigo-600 transition text-white rounded-full text-sm"
             >
               Login
             </button>
           ) : (
-            <button className="cursor-pointer px-6 py-2 mt-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full text-sm">
-              Login
+            <button
+              onClick={() => {
+                logout();
+                setOpen(false);
+              }}
+              className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-indigo-600 transition text-white rounded-full text-sm"
+            >
+              Logout
             </button>
           )}
         </div>
