@@ -4,9 +4,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useAppContext } from "../context/AppContext";
-import { assets } from "../assets/assets";
+// import { assets } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
-
+import { IoStar } from "react-icons/io5";
+import { IoStarOutline } from "react-icons/io5";
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -104,16 +105,9 @@ const ProductDetails = () => {
         <div className="text-sm w-full md:w-1/2">
           <h1 className="text-3xl font-medium">{product.name}</h1>
           <div className="flex items-center gap-0.5 mt-1">
-            {Array(5)
-              .fill("x")
-              .map((_, i) => (
-                <img
-                  key={i}
-                  src={i < 4 ? assets.star_icon : assets.star_dull_icon}
-                  className="md:w-4 w-3.5"
-                  alt="star icon"
-                />
-              ))}
+            {[1, 2, 3, 4, 5].map((_, i) =>
+              i < 4 ? <IoStar /> : <IoStarOutline />
+            )}
             <p className="text-base ml-2">(4)</p>
           </div>
 
@@ -138,7 +132,7 @@ const ProductDetails = () => {
 
           <div className="flex items-center mt-10 gap-4 text-base">
             <button
-              className="w-full py-3.5 cursor-pointer font-medium bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition"
+              className="w-full py-3.5 cursor-pointer font-medium rounded-md bg-gray-100 text-gray-800/80 hover:bg-gray-200 transition"
               onClick={(e) => {
                 e.stopPropagation();
                 addToCartAPI(product._id, 1);
@@ -148,7 +142,7 @@ const ProductDetails = () => {
             </button>
             <button
               onClick={handleBuyNow}
-              className="w-full py-3.5 cursor-pointer font-medium bg-indigo-500 text-white hover:bg-indigo-600 transition"
+              className="w-full py-3.5 cursor-pointer font-medium bg-black rounded-md text-white transition"
             >
               Buy now
             </button>
@@ -169,6 +163,7 @@ const ProductDetails = () => {
               <ProductCard key={index} product={product} />
             ))}
         </div>
+
         <button
           onClick={() => navigate("/products")}
           className="hover:bg-green-500 cursor-pointer px-12 transition my-16 py-2.5 border rounded text-primary"

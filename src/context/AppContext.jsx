@@ -19,6 +19,7 @@ export const AppContextProvider = ({ children }) => {
     return localStorage.getItem("isSeller") === "null";
   });
   const [count, setCount] = useState(0);
+
   const [user, setUser] = useState(null);
   const [showUserLogin, setShowUserLogin] = useState(false);
   const [products, setProducts] = useState([]);
@@ -37,51 +38,17 @@ export const AppContextProvider = ({ children }) => {
   const fetchProducts = async () => {
     setProducts(dummyProducts);
   };
-
-  // const addToCart = (itemId) => {
-  //   let cartData = structuredClone(cartItems);
-  //   cartData[itemId] = cartData[itemId] ? cartData[itemId] + 1 : 1;
-  //   setCartItems(cartData);
-  //   toast.success("Added to cart");
-  // };
-
-  // const updateCartItem = (itemId, quantity) => {
-  //   let cartData = structuredClone(cartItems);
-  //   cartData[itemId] = quantity;
-  //   setCartItems(cartData);
-  //   toast.success("Updated cart");
-  // };
-
-  // const removeItem = (itemId) => {
-  //   let cartData = structuredClone(cartItems);
-  //   if (cartData[itemId]) {
-  //     cartData[itemId] -= 1;
-  //     if (cartData[itemId] === 0) {
-  //       delete cartData[itemId];
-  //     }
-  //   }
-  //   setCartItems(cartData);
-  //   toast.success("Removed from cart");
-  // };
-
-  // const getCartCount = () => {
-  //   return Object.values(cartItems).reduce((sum, count) => sum + count, 0);
-  // };
-
-  // const getCartAmount = () => {
-  //   let totalAmount = 0;
-  //   for (const itemId in cartItems) {
-  //     const product = products.find((p) => p._id === itemId);
-  //     if (product && cartItems[itemId] > 0) {
-  //       totalAmount += product.offerPrice * cartItems[itemId];
-  //     }
-  //   }
-  //   return Math.floor(totalAmount * 100) / 100;
-  // };
+  useEffect(() => {
+    const savedUser = localStorage.getItem("user");
+    const savedAdmin = localStorage.getItem("admin");
+    if (savedUser) setUser(JSON.parse(savedUser));
+    if (savedAdmin) setIsSellerState(JSON.parse(savedAdmin));
+  }, []);
 
   const fetchCart = async () => {
     try {
-      const token = localStorage.getItem("token")?.trim();
+      const token = localStorage.getItem("bearerToken")?.trim();
+      console.log(token, "------------");
       const res = await axios.get("http://localhost:5000/api/cart/getcart", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -104,7 +71,18 @@ export const AppContextProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/auth/auth/me");
+      const token = localStorage.getItem("bearerToken")?.trim();
+
+      if (!token) {
+        throw new Error("Token not found");
+      }
+
+      const res = await axios.get("http://localhost:5000/api/auth/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       setUser(res.data.user);
     } catch (err) {
       console.error("Not logged in or invalid token", err.message);
@@ -154,9 +132,9 @@ export const AppContextProvider = ({ children }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Authorization header with Bearer token
+            Authorization: `Bearer ${token}`,
           },
-          withCredentials: true, // optional, for cookies
+          withCredentials: true,
         }
       );
       if (res.data.success) {

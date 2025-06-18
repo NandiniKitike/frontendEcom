@@ -70,8 +70,14 @@ import quinoa_image from "./quinoa_image.png";
 import brown_rice_image from "./brown_rice_image.png";
 import barley_image from "./barley_image.png";
 import address_image from "./address_image.png";
+import bannervid from "./bannervid.mp4";
+import bannerfirst from "./bannerfirst.mp4";
+import green from "./green.png";
 export const assets = {
   logo,
+  bannerfirst,
+  green,
+  bannervid,
   search_icon,
   remove_icon,
   arrow_right_icon_colored,

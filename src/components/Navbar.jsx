@@ -3,7 +3,7 @@ import { assets } from "../assets/assets";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import { useEffect } from "react";
-
+import { PiShoppingCartThin } from "react-icons/pi";
 const Navbar = () => {
   console.log("rendered");
   const [open, setOpen] = React.useState(false);
@@ -41,22 +41,26 @@ const Navbar = () => {
       </Link>
 
       {/* Desktop Menu */}
-      <div className="hidden sm:flex items-center gap-8">
+      <div className="hidden sm:flex items-center text-black gap-8">
         <Link to="/">Home</Link>
         <Link to="/products">All Products</Link>
         <Link to="/contact">Contact</Link>
 
-        <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
+        <div className="hidden lg:flex text-black items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
           <input
             onChange={(e) => {
               console.log("Input changed:", e.target.value);
               setSearchQuery(e.target.value);
             }}
-            className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
+            className="py-1.5 w-full bg-transparent outline-none placeholder-black"
             type="text"
             placeholder="Search products"
           />
-          <img className="w-4 h-4" src={assets.search_icon} alt="search" />
+          <img
+            className="w-4 h-4 text-black"
+            src={assets.search_icon}
+            alt="search"
+          />
         </div>
 
         <div
@@ -64,8 +68,8 @@ const Navbar = () => {
           className="relative cursor-pointer"
         >
           <div className="relative cursor-pointer">
-            <img className="w-6" src={assets.cart_icon} alt="cart" />
-            <button className="absolute -top-2 -right-3 text-xs text-white bg-green-500 w-[18px] h-[16px] rounded-full">
+            <PiShoppingCartThin />
+            <button className="absolute -top-2 -right-3 text-xs text-white bg-black w-[18px] h-[16px] rounded-full">
               {count || 0}
             </button>
           </div>
@@ -74,8 +78,7 @@ const Navbar = () => {
         {!user ? (
           <button
             onClick={() => setShowUserLogin(true)}
-            // className="cursor-pointer px-8 py-2 bg-green hover:bg-green transition text-black rounded-full"
-            className="group flex items-center gap-2 px-1 md:px-9 py-3 bg-green-500 rounded-full hover:bg-green-600 transition text-white cursor-pointer"
+            className="group flex items-center gap-2 w-25 h-10 md:px-9 py-3 bg-black rounded-full transition text-white cursor-pointer"
           >
             Login
           </button>
@@ -156,7 +159,7 @@ const Navbar = () => {
                 setOpen(false);
                 setShowUserLogin(true);
               }}
-              className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-indigo-600 transition text-white rounded-full text-sm"
+              className="cursor-pointer px-6 w-40 h-10 py-2 mt-2 bg-primary hover:bg-indigo-600 transition text-white rounded-full text-sm"
             >
               Login
             </button>

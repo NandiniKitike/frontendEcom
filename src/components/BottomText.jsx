@@ -14,7 +14,7 @@ const BottomText = () => {
           placeholder="Enter your email id"
           className="border border-gray-300 rounded-md h-full outline-none border-r-0 w-full rounded-r-none px-3 text-gray-500"
         ></input>
-        <button className="md:px-12 px-8 h-full text-white bg-green-500 hover:bg-green-600 transition-all cursor-pointer rounded-md rounded-1-none">
+        <button className="md:px-12 px-8 h-full text-white bg-black transition-all cursor-pointer border-b-black  rounded-1-none">
           Subscribe
         </button>
       </form>

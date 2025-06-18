@@ -1,9 +1,9 @@
 import React from "react";
-import { assets, features } from "../assets/assets";
+import { assets } from "../assets/assets";
 const BottomBanner = () => {
   return (
     <div className="relative mt-24">
-      <img
+      {/* <img
         src={assets.bottom_banner_image}
         alt="banner"
         className="w-full hidden md:block"
@@ -31,7 +31,22 @@ const BottomBanner = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
+      {/* </div> */}
+      <div>
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          width="full"
+          height="100"
+          className="w-full h-auto object-cover"
+        >
+          <source src={assets.bannervid} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
   );

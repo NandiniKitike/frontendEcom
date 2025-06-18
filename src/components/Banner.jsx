@@ -1,10 +1,39 @@
 import React from "react";
-import { assets } from "../assets/assets";
+import { IoIosArrowRoundForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 const Banner = () => {
   return (
-    <div className="relative">
-      <img
+    <div className="w-full h-[500px] p-3">
+      <div className="relative w-full h-full overflow-hidden">
+        <div className="absolute top-25 left-10">
+          <h1 className="text-4xl font-medium text-white shadow-2xl">
+            From farm to fridge, from tech to touch <br /> all you need, just a
+            click away.
+          </h1>
+
+          <div className="mt-8 flex gap-9">
+            <Link to={"/products"}>
+              <div className="bg-black px-3 w-40 h-10 rounded-full text-white text-sm font-semibold flex justify-between items-center border">
+                Explore Now
+                <div className="bg-white w-8 h-7 rounded-full flex justify-center items-center overflow-hidden group">
+                  <IoIosArrowRoundForward className="text-black text-2xl transform transition-transform duration-300 group-hover:translate-x-1" />
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+        <img
+          src="https://images.pexels.com/photos/5645122/pexels-photo-5645122.jpeg"
+          alt="Green Banner"
+          className="w-full h-auto object-cover rounded-lg"
+        />
+      </div>
+
+      {/* <div>
+       
+      </div> */}
+
+      {/* <img
         src={assets.main_banner_bg}
         alt=""
         className="w-full hidden md:block"
@@ -44,7 +73,7 @@ const Banner = () => {
             />
           </Link>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

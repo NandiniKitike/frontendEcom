@@ -1,7 +1,10 @@
 import React from "react";
 import { useAppContext } from "../context/AppContext";
-import { assets } from "../assets/assets";
+// import { assets } from "../assets/assets";
 import { useEffect } from "react";
+import { PiShoppingCartThin } from "react-icons/pi";
+import { IoStar } from "react-icons/io5";
+
 const ProductCard = ({ product }) => {
   const {
     currency,
@@ -45,21 +48,17 @@ const ProductCard = ({ product }) => {
             {product.name}
           </p>
           <div className="flex items-center gap-0.5">
-            {Array(5)
-              .fill("")
-              .map((_, i) => (
-                <img
-                  key={i}
-                  src={i < 4 ? assets.star_icon : assets.star_dull_icon}
-                  alt=""
-                  className="md:w-3.5 w3"
-                />
-              ))}
-            <p>(4)</p>
+            {[1, 2, 3, 4, 5].map((_, i) =>
+              i < 4 ? (
+                <IoStar key={i} className="text-yellow-500" />
+              ) : (
+                <IoStar key={i} className="text-gray-300" />
+              )
+            )}
           </div>
 
           <div className="flex items-end justify-between mt-3">
-            <p className="md:text-xl text-base font-medium text-green-500">
+            <p className="md:text-xl text-base font-medium text-black">
               {currency}
               {product.offerPrice || product.price}{" "}
               {product.offerPrice && (
@@ -76,23 +75,23 @@ const ProductCard = ({ product }) => {
                 (item) => item?.product_id?._id === product._id
               ) ? (
                 <button
-                  className="flex items-center justify-center gap-1 bg-green-100 border border-green-300 cursor-pointer md:w-[80px] w-[64px] h-[34px] rounded"
+                  className="flex items-center justify-center gap-1 bg-black border border-black cursor-pointer md:w-[80px] w-[64px] h-[34px] rounded"
                   onClick={(e) => {
                     e.stopPropagation();
                     addToCartAPI(product._id, 1);
                   }}
                 >
-                  <img src={assets.cart_icon} alt="cart" />
-                  Add
+                  <PiShoppingCartThin className="text-lg text-white" />
+                  <span className="text-sm font-medium text-white">Add</span>
                 </button>
               ) : (
-                <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-green-500/25 rounded select-none">
+                <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-black rounded select-none">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       removeItem(product._id);
                     }}
-                    className="cursor-pointer text-md px-2 h-full"
+                    className="cursor-pointer text-md px-2 h-full text-white"
                   >
                     -
                   </button>
@@ -104,7 +103,7 @@ const ProductCard = ({ product }) => {
                       e.stopPropagation();
                       addToCartAPI(product._id);
                     }}
-                    className="cursor-pointer text-md px-2 h-full"
+                    className="cursor-pointer text-md px-2 text-white h-full"
                   >
                     +
                   </button>
