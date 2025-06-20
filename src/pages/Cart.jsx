@@ -5,6 +5,7 @@ import PaymentGetway from "../paymnetgetway/PaymentGetway";
 import { useAppContext } from "../context/AppContext";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { Link } from "react-router-dom";
+const API_BASE_URL = axios.defaults.baseURL;
 const Cart = () => {
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -17,7 +18,7 @@ const Cart = () => {
   const fetchCart = async () => {
     try {
       const token = localStorage.getItem("bearerToken");
-      const res = await axios.get("http://localhost:5000/api/cart/getcart", {
+      const res = await axios.get(`${API_BASE_URL}/api/cart/getcart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,14 +40,11 @@ const Cart = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("bearerToken");
-      const res = await axios.get(
-        "http://localhost:5000/api/Address/getAddress",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.get(`${API_BASE_URL}/api/Address/getAddress`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (res.data && Array.isArray(res.data)) {
         setAddresses(res.data);
@@ -136,7 +134,7 @@ const Cart = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/orders",
+        `${API_BASE_URL}/api/orders`,
         orderPayload,
         {
           headers: {

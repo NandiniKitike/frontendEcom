@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
-
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const API_BASE_URL = axios.defaults.baseURL;
 const InputField = ({ type, placeholder, name, handleChange, address }) => {
   return (
     <input
@@ -39,7 +40,7 @@ const AddAdress = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/Address/createAdr", {
+      const res = await axios(`${API_BASE_URL}/api/Address/createAdr`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

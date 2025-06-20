@@ -1,7 +1,76 @@
+// import React, { useState, useEffect } from "react";
+// import toast from "react-hot-toast";
+// import axios from "axios";
+// import { useNavigate, useParams } from "react-router-dom";
+
+// const EditCategory = () => {
+//   const { id } = useParams();
+//   const [description, setDescription] = useState("");
+//   const [name, setName] = useState("");
+//   const [is_active, setIs_active] = useState("");
+//   const navigate = useNavigate();
+
+//   // Fetch existing category data when component mounts
+//   useEffect(() => {
+//     const fetchCategory = async () => {
+//       try {
+//         const token = localStorage.getItem("bearerToken");
+//         const { data } = await axios.get(
+//           `http://localhost:5000/api/categories/category/${id}`,
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+//         setName(data.name);
+//         setDescription(data.description);
+//         setIs_active(data.is_active);
+//       } catch (error) {
+//         toast.error("Failed to fetch category details");
+//         console.error("Update category error:", error.response || error);
+//       }
+//     };
+
+//     fetchCategory();
+//   }, [id]);
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       const token = localStorage.getItem("bearerToken");
+
+//       if (!token) {
+//         toast.error("Authentication token missing");
+//         return;
+//       }
+
+//       await axios.put(
+//         `http://localhost:5000/api/categories/categoryupdate/${id}`,
+//         {
+//           name,
+//           description,
+//           is_active,
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//             "Content-Type": "application/json",
+//           },
+//         }
+//       );
+
+//       toast.success("Category updated successfully");
+//       navigate("/seller/category-list");
+//     } catch (error) {
+//       toast.error(error.response?.data?.message || "Failed to update category");
+//     }
+//   };
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+
+const API_BASE_URL = axios.defaults.baseURL;
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -16,7 +85,7 @@ const EditCategory = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          `http://localhost:5000/api/categories/category/${id}`,
+          `${API_BASE_URL}/api/categories/category/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -26,7 +95,7 @@ const EditCategory = () => {
         setIs_active(data.is_active);
       } catch (error) {
         toast.error("Failed to fetch category details");
-        console.error("Update category error:", error.response || error);
+        console.error("Fetch category error:", error.response || error);
       }
     };
 
@@ -45,7 +114,7 @@ const EditCategory = () => {
       }
 
       await axios.put(
-        `http://localhost:5000/api/categories/categoryupdate/${id}`,
+        `${API_BASE_URL}/api/categories/categoryupdate/${id}`,
         {
           name,
           description,
@@ -65,7 +134,6 @@ const EditCategory = () => {
       toast.error(error.response?.data?.message || "Failed to update category");
     }
   };
-
   return (
     <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
       <form onSubmit={handleSubmit} className="md:p-10 p-4 space-y-2 max-w-lg">

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import axios from "axios";
 import toast from "react-hot-toast";
-
+const API_BASE_URL = axios.defaults.baseURL;
 const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const EditProduct = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          "http://localhost:5000/api/categories/getCategories",
+          `${API_BASE_URL}/api/categories/getCategories`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -37,7 +37,7 @@ const EditProduct = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          `http://localhost:5000/api/products/getProduct/${id}`,
+          `${API_BASE_URL}/api/products/getProduct/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -69,7 +69,7 @@ const EditProduct = () => {
       });
 
       const uploadRes = await axios.post(
-        "http://localhost:5000/api/Products/upload-image",
+        `${API_BASE_URL}/api/Products/upload-image`,
         imageFormData,
         {
           headers: {
@@ -97,7 +97,7 @@ const EditProduct = () => {
       };
       console.log("Updating product ID:", id);
       const response = await axios.put(
-        `http://localhost:5000/api/Products/updateProduct/${id}`,
+        `${API_BASE_URL}/api/Products/updateProduct/${id}`,
         payload,
         {
           headers: {

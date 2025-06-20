@@ -1,14 +1,76 @@
+// import axios from "axios";
+// import React from "react";
+// import { useState, useEffect } from "react";
+// import toast from "react-hot-toast";
+// import { useNavigate } from "react-router-dom";
+// import { Edit3 } from "lucide-react";
+// import { Trash2 } from "lucide-react";
+// // import { useAppContext } from "../../context/AppContext";
+// const CategoryList = () => {
+//   const navigate = useNavigate();
+
+//   const [category, setCategory] = useState([]);
+
+//   useEffect(() => {
+//     const fetchCategories = async () => {
+//       try {
+//         const token = localStorage.getItem("bearerToken");
+//         const { data } = await axios.get(
+//           "http://localhost:5000/api/categories/getCategories",
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+
+//         console.log("categories", data);
+
+//         // ✅ Directly set data since it's already an array
+//         setCategory(data);
+//       } catch (err) {
+//         toast.error(err.response?.data?.message || "Something went wrong");
+//       }
+//     };
+
+//     fetchCategories();
+//   }, []);
+
+//   const onSubmitHandler = async () => {
+//     navigate("/seller/category-add");
+//   };
+//   const handleDelete = async (id) => {
+//     const confirmDelete = window.confirm("Are you sure you want to delete");
+//     if (confirmDelete) {
+//       try {
+//         const token = localStorage.getItem("bearerToken");
+//         await axios.delete(
+//           "http://localhost:5000/api/categories/delCategory/" + id,
+//           {
+//             headers: { Authorization: `Bearer ${token}` },
+//           }
+//         );
+//         setCategory((prevProducts) => prevProducts.filter((p) => p._id !== id));
+//         toast.success("Product deleted successfully");
+//       } catch (error) {
+//         toast.error(
+//           error.response?.data?.message || "Failed to delete product"
+//         );
+//       }
+//     }
+//   };
+
+//   const handleEdit = async (id) => {
+//     navigate("/seller/edit-category/" + id);
+//   };
 import axios from "axios";
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { Edit3 } from "lucide-react";
-import { Trash2 } from "lucide-react";
-// import { useAppContext } from "../../context/AppContext";
+import { Edit3, Trash2 } from "lucide-react";
+
+const API_BASE_URL = axios.defaults.baseURL;
+
 const CategoryList = () => {
   const navigate = useNavigate();
-
   const [category, setCategory] = useState([]);
 
   useEffect(() => {
@@ -16,16 +78,12 @@ const CategoryList = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          "http://localhost:5000/api/categories/getCategories",
+          `${API_BASE_URL}/api/categories/getCategories`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
-        console.log("categories", data);
-
-        // ✅ Directly set data since it's already an array
-        setCategory(data);
+        setCategory(data); // assuming data is the array
       } catch (err) {
         toast.error(err.response?.data?.message || "Something went wrong");
       }
@@ -34,32 +92,30 @@ const CategoryList = () => {
     fetchCategories();
   }, []);
 
-  const onSubmitHandler = async () => {
+  const onSubmitHandler = () => {
     navigate("/seller/category-add");
   };
+
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete");
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
     if (confirmDelete) {
       try {
         const token = localStorage.getItem("bearerToken");
-        await axios.delete(
-          "http://localhost:5000/api/categories/delCategory/" + id,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setCategory((prevProducts) => prevProducts.filter((p) => p._id !== id));
-        toast.success("Product deleted successfully");
+        await axios.delete(`${API_BASE_URL}/api/categories/delCategory/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCategory((prev) => prev.filter((p) => p._id !== id));
+        toast.success("Category deleted successfully");
       } catch (error) {
         toast.error(
-          error.response?.data?.message || "Failed to delete product"
+          error.response?.data?.message || "Failed to delete category"
         );
       }
     }
   };
 
-  const handleEdit = async (id) => {
-    navigate("/seller/edit-category/" + id);
+  const handleEdit = (id) => {
+    navigate(`/seller/edit-category/${id}`);
   };
   return (
     <div className="flex-1 py-10 flex flex-col mt-[-10px] justify-between">

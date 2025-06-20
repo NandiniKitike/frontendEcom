@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
-
+const API_BASE_URL = axios.defaults.baseURL;
 const Orders = () => {
   const { currency } = useAppContext();
   const [orders, setOrders] = useState([]);
@@ -10,7 +10,7 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:5000/api/orders/getallorder"
+        `${API_BASE_URL}/api/orders/getallorder`
       );
       setOrders(data);
       if (data.length === 0) toast.error("No orders found!");
@@ -22,7 +22,7 @@ const Orders = () => {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/orders/status/${orderId}`,
+        `${API_BASE_URL}/api/orders/status/${orderId}`,
         {
           status: newStatus,
         }

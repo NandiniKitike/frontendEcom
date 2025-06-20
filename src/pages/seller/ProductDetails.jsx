@@ -8,6 +8,7 @@ import { useAppContext } from "../../context/AppContext";
 import ProductCard from "../../components/ProductCard";
 import { IoStar } from "react-icons/io5";
 import { IoStarOutline } from "react-icons/io5";
+const API_BASE_URL = axios.defaults.baseURL;
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/Products/getProduct/${id}`
+          `${API_BASE_URL}/api/Products/getProduct/${id}`
         );
         const data = res.data;
 
