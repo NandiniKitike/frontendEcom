@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../../context/AppContext";
 // import { assets } from "../assets/assets";
-import ProductCard from "../components/ProductCard";
+import ProductCard from "../../components/ProductCard";
 import { IoStar } from "react-icons/io5";
 import { IoStarOutline } from "react-icons/io5";
 const ProductDetails = () => {
@@ -81,7 +81,7 @@ const ProductDetails = () => {
         >
           {product.category}
         </Link>
-        /<span className="text-green-500"> {product.name}</span>
+        /<span className="text-black"> {product.name}</span>
       </p>
 
       <div className="flex flex-col md:flex-row gap-16 mt-4">
@@ -106,7 +106,11 @@ const ProductDetails = () => {
           <h1 className="text-3xl font-medium">{product.name}</h1>
           <div className="flex items-center gap-0.5 mt-1">
             {[1, 2, 3, 4, 5].map((_, i) =>
-              i < 4 ? <IoStar /> : <IoStarOutline />
+              i < 4 ? (
+                <IoStar className="text-amber-500" />
+              ) : (
+                <IoStarOutline className="text-gray-300" />
+              )
             )}
             <p className="text-base ml-2">(4)</p>
           </div>
@@ -136,6 +140,7 @@ const ProductDetails = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 addToCartAPI(product._id, 1);
+                handleBuyNow();
               }}
             >
               Add to Cart
@@ -153,8 +158,8 @@ const ProductDetails = () => {
       {/* Related Products */}
       <div className="flex flex-col items-center mt-20">
         <div className="flex flex-col w-max">
-          <p className="text-3xl font-medium">Related Products</p>
-          <div className="w-[120px] h-0.5 bg-green-300 rounded-full mt-2"></div>
+          <p className="text-3xl text-black font-medium">Related Products</p>
+          <div className="w-[120px] h-0.5 bg-black rounded-full mt-2"></div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-6 lg:grid-cols-5 mt-6 w-full">
           {relatedProducts
@@ -166,7 +171,7 @@ const ProductDetails = () => {
 
         <button
           onClick={() => navigate("/products")}
-          className="hover:bg-green-500 cursor-pointer px-12 transition my-16 py-2.5 border rounded text-primary"
+          className="hover:bg-black hover:text-white text-black cursor-pointer px-12 transition my-16 py-2.5 border rounded text-primary"
         >
           See more
         </button>

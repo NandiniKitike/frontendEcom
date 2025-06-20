@@ -2,7 +2,7 @@ import { assets } from "../assets/assets";
 import { footerLinks } from "../assets/assets";
 const Footer = () => {
   return (
-    <div className="px-6 md:px-16 lg:px-24 xl:px-32 mt-24 bg-gray-700">
+    <div className="px-6 md:px-16 lg:px-24 xl:px-32 mt-24 bg-black">
       <div className="flex flex-col md:flex-row  justify-between  py-10 border-b border-gray-500/30 text-gray-500">
         <div>
           <img className="w-30 md:w-32" src={assets.logo} />

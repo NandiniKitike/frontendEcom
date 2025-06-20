@@ -48,11 +48,11 @@ const SellerLayout = () => {
             alt="logo"
           />
         </Link>
-        <div className="flex items-center gap-5 text-gray-500">
+        <div className="flex items-center gap-5 text-black">
           <p>Hi! Admin</p>
           <button
             onClick={logout}
-            className="border rounded-full text-sm px-4 py-1"
+            className="border rounded-full text-sm hover:bg-black hover:text-white px-5 py-2"
           >
             Logout
           </button>
@@ -71,7 +71,7 @@ const SellerLayout = () => {
               className={({ isActive }) => `flex items-center py-3 px-4 gap-3 
                 ${
                   isActive
-                    ? "border-r-4 md:border-r-[6px] bg-green-500/10 border-green-500 text-green-500"
+                    ? "border-r-4 md:border-r-[6px] hover:bg-gray-300  hover:text-black border-black text-black"
                     : "hover:bg-gray-100/90 border-white "
                 }`}
             >

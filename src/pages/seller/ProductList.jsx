@@ -91,7 +91,7 @@ const ProductList = () => {
           <h2 className="text-2xl font-bold">All Products</h2>
           <button
             onClick={onSubmitHandler}
-            className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-900"
+            className="bg-gray-50 text-black border  px-4 py-2 rounded text-sm hover:bg-black hover:text-white"
           >
             Add Product
           </button>
@@ -142,14 +142,14 @@ const ProductList = () => {
                     <td className="px-4 py-3">{product.stock_quantity}</td>
                     <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
                       <input
-                        onChange={
-                          (e) => toggleStock(product._id, e.target.checked) // Pass the new is_active value
+                        onChange={(e) =>
+                          toggleStock(product._id, e.target.checked)
                         }
-                        checked={product.is_active} // Correct: use is_active, not in_stock
+                        checked={product.is_active}
                         type="checkbox"
                         className="sr-only peer"
                       />
-                      <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
+                      <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-gray-600 transition-colors duration-200"></div>
                       <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
                     </label>
                     <td>

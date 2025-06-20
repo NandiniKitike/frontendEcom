@@ -59,7 +59,7 @@ const AddAdress = () => {
       const data = await res.json();
 
       if (res.ok) {
-        alert("✅ Address created successfully");
+        alert("Address created successfully");
         navigate("/cart");
         console.log(data);
       } else {
@@ -75,8 +75,7 @@ const AddAdress = () => {
   return (
     <div className="mt-16 pb-16">
       <p className="text-2xl md:text-3xl text-gray-500">
-        Add Shipping{" "}
-        <span className="font-semibold text-green-500">Address</span>
+        Add Shipping <span className="font-semibold text-black">Address</span>
       </p>
       <div className="flex flex-col-reverse md:flex-row justify-between mt-10">
         <div className="flex-1 max-w-md">
@@ -152,7 +151,7 @@ const AddAdress = () => {
             />
             <button
               type="submit"
-              className="w-full mt-6 bg-green-500 text-white py-3 hover:bg-green-600 transition cursor-pointer"
+              className="w-full mt-6 bg-gray-500 text-white hover:text-white py-3 hover:bg-black transition cursor-pointer"
             >
               Save Address
             </button>

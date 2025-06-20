@@ -236,9 +236,8 @@ const SellerLogin = () => {
       const response = await axios.post(url, payload);
       const data = response.data;
 
-      if (data.success) {
-        toast.success(data.message || "Success");
-        console.log("Login/Register Response:", data);
+      if (response.status === 201 && data.token) {
+        toast.success(isLogin ? "Login successful" : "Registration successful");
 
         if (isLogin) {
           localStorage.setItem("bearerToken", data.token);
@@ -272,7 +271,7 @@ const SellerLogin = () => {
     >
       <div className="flex flex-col gap-5 m-auto items-start p-8 py-12 sm:min-w-88 rounded-lg shadow-xl border border-gray-200">
         <p className="text-2xl font-medium m-auto">
-          <span className="text-green-500">Seller </span>
+          <span className="text-black">Seller </span>
           {isLogin ? "Login" : "Register"}
         </p>
 
@@ -284,7 +283,7 @@ const SellerLogin = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
-              className="border border-gray-300 rounded w-full p-2 mt-1 outline-green-500"
+              className="border border-gray-300 rounded w-full p-2 mt-1 outline-black"
               required
             />
           </div>
@@ -297,7 +296,7 @@ const SellerLogin = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
-            className="border border-gray-300 rounded w-full p-2 mt-1 outline-green-500"
+            className="border border-gray-300 rounded w-full p-2 mt-1 outline-black"
             required
           />
         </div>
@@ -309,14 +308,14 @@ const SellerLogin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
-            className="border border-gray-300 rounded w-full p-2 mt-1 outline-green-500"
+            className="border border-gray-300 rounded w-full p-2 mt-1 outline-black"
             required
           />
         </div>
 
         <button
           type="submit"
-          className="bg-green-500 text-white w-full py-2 rounded-md cursor-pointer"
+          className="bg-black text-white w-full py-2 rounded-md cursor-pointer"
         >
           {isLogin ? "Login" : "Register"}
         </button>
@@ -325,7 +324,7 @@ const SellerLogin = () => {
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <span
             onClick={() => setIsLogin(!isLogin)}
-            className="text-green-500 cursor-pointer font-semibold"
+            className="text-black cursor-pointer font-semibold"
           >
             {isLogin ? "Register" : "Login"}
           </span>

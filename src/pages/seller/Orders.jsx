@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useAppContext } from "../../context/AppContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
 
 const Orders = () => {
   const { currency } = useAppContext();
@@ -12,13 +12,29 @@ const Orders = () => {
       const { data } = await axios.get(
         "http://localhost:5000/api/orders/getallorder"
       );
-      if (data.success) {
-        setOrders(data.orders);
-      } else {
-        toast.error(data.message);
-      }
+      setOrders(data);
+      if (data.length === 0) toast.error("No orders found!");
     } catch (error) {
       toast.error(error.message);
+    }
+  };
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const { data } = await axios.put(
+        `http://localhost:5000/api/orders/status/${orderId}`,
+        {
+          status: newStatus,
+        }
+      );
+      if (data.success) {
+        toast.success("Order status updated successfully!");
+        fetchOrders();
+      } else {
+        toast.error("Failed to update status.");
+      }
+    } catch (error) {
+      toast.error(error.message || "Error updating status");
     }
   };
 
@@ -27,59 +43,91 @@ const Orders = () => {
   }, []);
 
   return (
-    <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll">
-      <div className="md:p-10 p-4 space-y-4">
-        <h2 className="text-lg font-medium">Orders List</h2>
+    <div className="flex flex-col items-center max-w-7xl w-full px-4 md:px-10 pt-6">
+      <h2 className="text-xl font-bold mb-4 w-full">Orders List</h2>
 
-        {orders.length === 0 ? (
-          <p className="text-gray-500 text-center mt-10">No orders found.</p>
-        ) : (
-          orders.map((order, index) => (
-            <div
-              key={index}
-              className="flex flex-col md:items-center gap-5 p-5 max-w-4xl rounded-md border md:flex-row justify-between border-gray-300 text-gray-800"
-            >
-              <div className="flex gap-5 max-w-80">
-                <div>
-                  {order.orderItems.map((item, i) => (
-                    <div key={item._id || i} className="flex flex-col">
-                      <p className="font-medium">
-                        {item.product_id?.name ?? "Unknown Product"}{" "}
-                        <span className="text-green-500">
-                          x {item.quantity}
-                        </span>
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+      <div className="flex flex-col items-center w-full overflow-hidden rounded-md bg-white border border-gray-500/20">
+        <table className="md:table-auto table-fixed w-full overflow-hidden">
+          <thead className="text-gray-900 text-1xl text-bold text-left border-b border-gray-200 ">
+            <tr>
+              <th className="px-4 py-3 font-semibold truncate">SN</th>
+              <th className="px-4 py-3 font-semibold truncate">Products</th>
+              <th className="px-4 py-3 font-semibold truncate">Amount</th>
+              <th className="px-4 py-3 font-semibold truncate hidden md:table-cell">
+                Address
+              </th>
+              <th className="px-4 py-3 font-semibold truncate">Payment</th>
+              <th className="px-4 py-3 font-semibold truncate">Date</th>
+              <th className="px-4 py-3 font-semibold truncate">Status</th>
+              <th className="px-4 py-3 font-semibold truncate">Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.length === 0 ? (
+              <tr>
+                <td colSpan="8" className="text-center py-5 text-gray-500">
+                  No orders found.
+                </td>
+              </tr>
+            ) : (
+              orders.map((order, index) => (
+                <tr
+                  key={order._id}
+                  className="border-b border-gray-200 text-sm text-gray-800"
+                >
+                  <td className=" text-gray-600 px-4 py-3">{index + 1}</td>
 
-              <div className="text-sm md:text-base text-black/60">
-                <p className="text-black/80">
-                  {order.address_id?.address_line1}
-                </p>
-                <p>
-                  {order.address_id?.city}, {order.address_id?.state}
-                </p>
-                <p>
-                  {order.address_id?.postal_code}, {order.address_id?.country}
-                </p>
-                <p>{order.address_id?.phone}</p>
-              </div>
+                  <td className="px-4 py-3 truncate">
+                    {order.orderItems.map((item, i) => (
+                      <div key={i} className="text-gray-600">
+                        {item.product_id?.name || "Unknown"} x {item.quantity}
+                      </div>
+                    ))}
+                  </td>
 
-              <p className="font-medium text-lg my-auto">
-                {currency}
-                {order.total_amount}
-              </p>
+                  <td className="px-4 py-3 text-gray-600 font-medium">
+                    {currency}
+                    {order.total_amount}
+                  </td>
 
-              <div className="flex flex-col text-sm md:text-base text-black/60">
-                <p>Method: {order.payment_method}</p>
-                <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
-                <p>Status: {order.status}</p>
-              </div>
-            </div>
-          ))
-        )}
+                  <td className="px-4 py-3 hidden md:table-cell text-sm text-gray-600">
+                    {order.address_id?.city}, {order.address_id?.state},{" "}
+                    {order.address_id?.postal_code}
+                    <br />
+                    <span className="text-xs text-gray-500">
+                      {order.address_id?.phone}
+                    </span>
+                  </td>
+
+                  <td className="px-4 py-3">{order.payment_method}</td>
+                  <td className="px-4 py-3">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </td>
+
+                  <td className="px-4 py-3 capitalize">{order.status}</td>
+
+                  <td className="px-4 py-3">
+                    <select
+                      value={order.status}
+                      onChange={(e) =>
+                        handleStatusChange(order._id, e.target.value)
+                      }
+                      className="border bg-black text-white border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="processing">Processing</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="out for delivery">Out for Delivery</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                      {/* <option value="returned">Returned</option> */}
+                    </select>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

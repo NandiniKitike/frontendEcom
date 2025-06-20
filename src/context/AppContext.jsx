@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { dummyProducts } from "../assets/assets";
 // import toast from "react-hot-toast";
 import axios from "axios";
-
+import toast from "react-hot-toast";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL =
   import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -139,6 +139,7 @@ export const AppContextProvider = ({ children }) => {
       );
       if (res.data.success) {
         fetchCart();
+        toast.success("Item added to cart successfully!");
       }
       return res.data;
     } catch (error) {
@@ -194,7 +195,7 @@ export const AppContextProvider = ({ children }) => {
       fetchUser();
       fetchCart();
     }
-    // ✅ ADD THIS
+    //  ADD THIS
   }, []);
 
   const handleDelete = async (id) => {

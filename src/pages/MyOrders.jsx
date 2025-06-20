@@ -36,8 +36,8 @@ const MyOrders = () => {
   return (
     <div className="mt-16 pb-16">
       <div className="flex flex-col items-end w-max mb-8">
-        <p className="text-2xl font-medium uppercase">My Orders</p>
-        <div className="w-16 h-0.5 bg-green-500 rounded-full"></div>
+        <p className="text-2xl font-medium uppercase text-black">My Orders</p>
+        <div className="w-16 h-0.5 bg-gray-500 rounded-full"></div>
       </div>
 
       {myOrders.length === 0 ? (
@@ -49,7 +49,7 @@ const MyOrders = () => {
               key={index}
               className="border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl"
             >
-              <p className="flex justify-between md:items-center text-green-500 md:font-medium mx-md:flex-col">
+              <p className="flex justify-between md:items-center text-black md:font-medium mx-md:flex-col">
                 <span>OrderId: {order._id}</span>
                 <span>Payment: {order.payment_method}</span>
                 <span>
@@ -59,9 +59,8 @@ const MyOrders = () => {
               </p>
 
               <p className="text-sm text-gray-600 mb-4">
-                Address: {order.address_id?.address_line1},{" "}
-                {order.address_id?.city}, {order.address_id?.state} -{" "}
-                {order.address_id?.postal_code}
+                {/* Address: {order.address_id?.address_line1},{" "} */}
+                {order.address_id?.city}, {order.address_id?.state}
               </p>
 
               {order.orderItems.map((item, idx) => (
@@ -93,7 +92,7 @@ const MyOrders = () => {
                     </div>
                   </div>
 
-                  <div className="text-black text-lg font-medium">
+                  <div className="text-gray-500 text-lg font-medium">
                     <p>Quantity: {item.quantity ?? 1}</p>
                     <p>Status: {order.status ?? "Pending"}</p>
                     <p>

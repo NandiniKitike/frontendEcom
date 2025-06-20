@@ -27,6 +27,7 @@ const Login = () => {
           setUser(data.user);
           setShowUserLogin(false);
           toast.success("Login successful!");
+          navigate("/seller");
 
           navigate("");
         } else {
@@ -38,12 +39,13 @@ const Login = () => {
           { name, email, password }
         );
 
-        if (data.success) {
+        if (data?.user) {
           toast.success("Registration successful. Please login.");
           setState("login");
           setName("");
           setEmail("");
           setPassword("");
+          navigate("/seller");
         } else {
           toast.error(data.message);
         }
@@ -74,7 +76,7 @@ const Login = () => {
               placeholder="Enter Name"
               onChange={(e) => setName(e.target.value)}
               value={name}
-              className="border border-gray-300 rounded w-full p-2 mt-1 outline-green-500"
+              className="border border-gray-300 rounded w-full p-2 mt-1 outline-black"
               required
             />
           </div>
@@ -85,7 +87,7 @@ const Login = () => {
           <input
             onChange={(e) => setEmail(e.target.value)}
             value={email}
-            className="border border-gray-300 rounded w-full p-2 mt-1 outline-green-500"
+            className="border border-gray-300 rounded w-full p-2 mt-1 outline-black"
             placeholder="Enter Email"
             type="email"
             required
@@ -98,7 +100,7 @@ const Login = () => {
             placeholder="Enter Password"
             type="password"
             onChange={(e) => setPassword(e.target.value)}
-            className="border border-gray-300 rounded w-full p-2 mt-1 outline-green-500"
+            className="border border-gray-300 rounded w-full p-2 mt-1 outline-black"
             value={password}
             required
           />
@@ -109,7 +111,7 @@ const Login = () => {
             Already have an account?{" "}
             <span
               onClick={() => setState("login")}
-              className="text-green-500 cursor-pointer"
+              className="text-black cursor-pointer"
             >
               Login here
             </span>
@@ -119,14 +121,14 @@ const Login = () => {
             Create account?{" "}
             <span
               onClick={() => setState("register")}
-              className="text-green-500 cursor-pointer"
+              className="text-black cursor-pointer"
             >
               Sign Up
             </span>
           </p>
         )}
 
-        <button className="bg-green-500 p-2 rounded hover:bg-green-300 transition-all text-white w-full">
+        <button className="bg-black p-2 rounded hover:bg-black transition-all text-white w-full">
           {state === "register" ? "Create Account" : "Login"}
         </button>
       </form>

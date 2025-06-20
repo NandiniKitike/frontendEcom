@@ -78,7 +78,7 @@ const Navbar = () => {
         {!user ? (
           <button
             onClick={() => setShowUserLogin(true)}
-            className="group flex items-center gap-2 w-25 h-10 md:px-9 py-3 bg-black rounded-full transition text-white cursor-pointer"
+            className="group flex  gap-2 w-25 justify-center h-10 md:px-9 py-3 bg-black rounded-full transition text-center items-center text-white cursor-pointer"
           >
             Login
           </button>
@@ -159,7 +159,7 @@ const Navbar = () => {
                 setOpen(false);
                 setShowUserLogin(true);
               }}
-              className="cursor-pointer px-6 w-40 h-10 py-2 mt-2 bg-primary hover:bg-indigo-600 transition text-white rounded-full text-sm"
+              className="cursor-pointer px-6 w-40 h-10 py-2 mt-2 bg-primary hover:bg-black transition text-black rounded-full text-sm"
             >
               Login
             </button>
@@ -169,7 +169,7 @@ const Navbar = () => {
                 logout();
                 setOpen(false);
               }}
-              className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-indigo-600 transition text-white rounded-full text-sm"
+              className="cursor-pointer px-6 py-2 mt-2 bg-primary hover:bg-black transition text-white rounded-full text-sm"
             >
               Logout
             </button>

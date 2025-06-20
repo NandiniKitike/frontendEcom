@@ -37,9 +37,10 @@ const PaymentGetway = ({ onSuccess }) => {
 
   return (
     <>
-      <div className=" mt-6 rounded-lg p-4 items-center w-full flex  justify-center ">
+      <div className="rounded-lg p-4 items-center w-full flex  justify-center ">
         <button
-          className="bg-green-500 font-semibold w-full px-6 py-2 rounded"
+          // className="bg-black font-semibold w-full px-6 py-2 rounded"
+          className="w-full py-3 rounded-md cursor-pointer bg-black text-white font-medium  disabled:bg-gray-400 disabled:cursor-not-allowed"
           onClick={() => openPayModal(options)}
         >
           Pay

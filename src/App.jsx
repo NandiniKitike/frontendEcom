@@ -9,7 +9,7 @@ import { useAppContext } from "./context/AppContext";
 import AllProducts from "./pages/AllProducts";
 import ProductCard from "./components/ProductCard";
 import ProductCategory from "./pages/ProductCategory";
-import ProductDetails from "./pages/ProductDetails";
+import ProductDetails from "./pages/seller/ProductDetails.jsx";
 import Cart from "./pages/Cart";
 import AddAddress from "./pages/AddAdress";
 import MyOrders from "./pages/MyOrders";
