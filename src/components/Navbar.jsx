@@ -429,7 +429,6 @@
 // };
 
 // export default Navbar;
-
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
@@ -448,7 +447,6 @@ const Navbar = () => {
     setShowUserLogin,
     navigate,
     searchQuery,
-    loadingUser,
     setSearchQuery,
     count,
   } = useAppContext();
@@ -469,9 +467,6 @@ const Navbar = () => {
       navigate("/products");
     }
   }, [searchQuery, navigate]);
-
-  // Remove this line that's blocking render - let navbar show even during loading
-  // if (loadingUser) return null;
 
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
@@ -533,9 +528,7 @@ const Navbar = () => {
         </div>
 
         {/* User Authentication */}
-        {loadingUser ? (
-          <div className="w-20 h-10 bg-gray-200 rounded-full animate-pulse"></div>
-        ) : !user ? (
+        {!user ? (
           <button
             onClick={() => setShowUserLogin(true)}
             className="group flex gap-2 justify-center h-10 px-6 py-2 bg-black hover:bg-gray-800 rounded-full transition text-center items-center text-white cursor-pointer"
