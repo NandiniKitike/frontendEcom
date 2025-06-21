@@ -7,7 +7,7 @@ import { PiShoppingCartThin } from "react-icons/pi";
 const Navbar = () => {
   console.log("rendered");
   const [open, setOpen] = React.useState(false);
-
+  //tested
   const {
     user,
     setUser,
