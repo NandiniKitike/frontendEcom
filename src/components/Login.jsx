@@ -169,7 +169,7 @@ const Login = () => {
         if (data.success) {
           setUser(data.user);
           setShowUserLogin(false);
-          localStorage.setItem("bearerToken", data.user.token);
+
           toast.success("Login successful!");
           navigate("/");
         } else {
