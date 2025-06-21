@@ -169,7 +169,7 @@ const Login = () => {
           setUser(data.user);
           setShowUserLogin(false);
           toast.success("Login successful!");
-          navigate("/seller");
+          navigate("/");
         } else {
           toast.error(data.message);
         }
