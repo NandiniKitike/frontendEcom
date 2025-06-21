@@ -1,7 +1,7 @@
 import React from "react";
-import Navbar from "./components/Navbar";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
 import Login from "./components/Login";
@@ -22,7 +22,7 @@ import CategoryList from "./pages/seller/CategoryList.jsx";
 import EditProduct from "./pages/seller/EditProduct.jsx";
 import AddCategory from "./pages/seller/AddCategory.jsx";
 import EditCategory from "./pages/seller/EditCategory.jsx";
-import CategoryProducts from "./components/CategoryProducts .jsx";
+import CategoryProducts from "./components/CategoryProducts.jsx";
 const App = () => {
   const location = useLocation();
   const isSellerPath = location.pathname.includes("seller");
