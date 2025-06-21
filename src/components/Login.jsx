@@ -161,7 +161,8 @@ const Login = () => {
       if (state === "login") {
         const { data } = await axios.post(
           `${BASE_URL}/api/auth/customer/login`,
-          { email, password }
+          { email, password },
+          { withCredentials: true }
         );
         console.log("API Response:", data);
 
@@ -177,7 +178,8 @@ const Login = () => {
       } else {
         const { data } = await axios.post(
           `${BASE_URL}/api/auth/customer/register`,
-          { name, email, password }
+          { name, email, password },
+          { withCredentials: true }
         );
 
         if (data?.user) {
