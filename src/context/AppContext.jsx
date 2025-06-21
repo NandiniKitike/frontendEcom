@@ -441,7 +441,7 @@ export const AppContextProvider = ({ children }) => {
 
   useEffect(() => {
     fetchProducts();
-    const token = localStorage.getItem("token")?.trim();
+    const token = localStorage.getItem("bearerToken")?.trim();
     if (token) {
       fetchUser();
       fetchCart();
