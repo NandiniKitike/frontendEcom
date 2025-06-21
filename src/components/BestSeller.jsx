@@ -50,9 +50,9 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import axios from "axios";
+import { BASE_URL } from "../../constant";
 
 // ✅ Use global base URL from axios
-const API_BASE_URL = axios.defaults.baseURL;
 
 const BestSeller = () => {
   const [products, setProducts] = useState([]);
@@ -60,9 +60,7 @@ const BestSeller = () => {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const res = await axios.get(
-          `${API_BASE_URL}/api/products/getAllProducts`
-        );
+        const res = await axios.get(`${BASE_URL}/api/products/getAllProducts`);
         if (Array.isArray(res.data)) {
           setProducts(res.data);
         } else {

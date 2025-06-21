@@ -142,9 +142,9 @@ import { useAppContext } from "../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../../constant";
 
 // ✅ Use baseURL from axios config
-const API_BASE_URL = axios.defaults.baseURL;
 
 const Login = () => {
   const [state, setState] = React.useState("login"); // "login" or "register"
@@ -160,7 +160,7 @@ const Login = () => {
     try {
       if (state === "login") {
         const { data } = await axios.post(
-          `${API_BASE_URL}/api/auth/customer/login`,
+          `${BASE_URL}/api/auth/customer/login`,
           { email, password }
         );
         console.log("API Response:", data);
@@ -175,7 +175,7 @@ const Login = () => {
         }
       } else {
         const { data } = await axios.post(
-          `${API_BASE_URL}/api/auth/customer/register`,
+          `${BASE_URL}/api/auth/customer/register`,
           { name, email, password }
         );
 

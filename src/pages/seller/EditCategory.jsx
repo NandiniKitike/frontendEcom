@@ -69,8 +69,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../../constant";
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -85,7 +84,7 @@ const EditCategory = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          `${API_BASE_URL}/api/categories/category/${id}`,
+          `${BASE_URL}/api/categories/category/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -114,7 +113,7 @@ const EditCategory = () => {
       }
 
       await axios.put(
-        `${API_BASE_URL}/api/categories/categoryupdate/${id}`,
+        `${BASE_URL}/api/categories/categoryupdate/${id}`,
         {
           name,
           description,

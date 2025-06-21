@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import axios from "axios";
 import { useAppContext } from "../context/AppContext";
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../constant";
+
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -12,9 +13,7 @@ const AllProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get(
-          `${API_BASE_URL}/api/Products/getAllProducts`
-        );
+        const res = await axios.get(`${BASE_URL}/api/Products/getAllProducts`);
         setProducts(res.data); // Assuming API returns array of products
         setFilteredProducts(res.data);
       } catch (error) {

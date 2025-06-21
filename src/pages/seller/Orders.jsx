@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../../constant";
+
 const Orders = () => {
   const { currency } = useAppContext();
   const [orders, setOrders] = useState([]);
 
   const fetchOrders = async () => {
     try {
-      const { data } = await axios.get(
-        `${API_BASE_URL}/api/orders/getallorder`
-      );
+      const token = localStorage.getItem("bearerToken");
+
+      const { data } = await axios.get(`${BASE_URL}/api/orders/getallorder`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setOrders(data);
       if (data.length === 0) toast.error("No orders found!");
     } catch (error) {
@@ -22,7 +25,7 @@ const Orders = () => {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const { data } = await axios.put(
-        `${API_BASE_URL}/api/orders/status/${orderId}`,
+        `${BASE_URL}/api/orders/status/${orderId}`,
         {
           status: newStatus,
         }

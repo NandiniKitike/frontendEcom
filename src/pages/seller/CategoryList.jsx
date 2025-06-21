@@ -66,8 +66,7 @@ import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { Edit3, Trash2 } from "lucide-react";
-
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../../constant";
 
 const CategoryList = () => {
   const navigate = useNavigate();
@@ -78,7 +77,7 @@ const CategoryList = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          `${API_BASE_URL}/api/categories/getCategories`,
+          `${BASE_URL}/api/categories/getCategories`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -101,7 +100,7 @@ const CategoryList = () => {
     if (confirmDelete) {
       try {
         const token = localStorage.getItem("bearerToken");
-        await axios.delete(`${API_BASE_URL}/api/categories/delCategory/${id}`, {
+        await axios.delete(`${BASE_URL}/api/categories/delCategory/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCategory((prev) => prev.filter((p) => p._id !== id));

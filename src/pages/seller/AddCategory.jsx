@@ -79,8 +79,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../../assets/assets"; // assume upload_area image exists
-
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../../constant";
 
 const AddCategory = () => {
   const [description, setDescription] = useState("");
@@ -104,13 +103,13 @@ const AddCategory = () => {
 
       let imageUrl = "";
 
-      // ✅ Step 1: Upload Image (if selected)
+      // Step 1: Upload Image (if selected)
       if (image) {
         const imageFormData = new FormData();
         imageFormData.append("files", image);
 
         const uploadRes = await axios.post(
-          `${API_BASE_URL}/api/Products/upload-image`,
+          `${BASE_URL}/api/Products/upload-image`,
           imageFormData,
           {
             headers: {
@@ -129,9 +128,9 @@ const AddCategory = () => {
         }
       }
 
-      // ✅ Step 2: Create Category with image URL
+      // Step 2: Create Category with image URL
       await axios.post(
-        `${API_BASE_URL}/api/categories/create`,
+        `${BASE_URL}/api/categories/create`,
         {
           name,
           description,

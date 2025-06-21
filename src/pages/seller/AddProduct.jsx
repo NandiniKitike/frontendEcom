@@ -122,8 +122,7 @@ import { assets } from "../../assets/assets";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../../constant";
 
 const AddProduct = () => {
   const [file, setFile] = useState([null, null, null, null]);
@@ -142,7 +141,7 @@ const AddProduct = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          `${API_BASE_URL}/api/categories/getCategories`,
+          `${BASE_URL}/api/categories/getCategories`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -177,7 +176,7 @@ const AddProduct = () => {
       });
 
       const uploadRes = await axios.post(
-        `${API_BASE_URL}/api/Products/upload-image`,
+        `${BASE_URL}/api/Products/upload-image`,
         imageFormData,
         {
           headers: {
@@ -205,7 +204,7 @@ const AddProduct = () => {
       };
 
       const createRes = await axios.post(
-        `${API_BASE_URL}/api/Products/createProduct`,
+        `${BASE_URL}/api/Products/createProduct`,
         createProductPayload,
         {
           headers: {

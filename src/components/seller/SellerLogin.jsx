@@ -215,11 +215,12 @@ import React, { useState, useEffect } from "react";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { BASE_URL } from "../../../constant";
 
 const SellerLogin = () => {
   const { isSeller, setIsSeller, navigate } = useAppContext();
 
-  const [isLogin, setIsLogin] = useState(true); // true = login, false = register
+  const [isLogin, setIsLogin] = useState(true);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -228,15 +229,17 @@ const SellerLogin = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const url = isLogin ? "/api/auth/admin/login" : "/api/auth/admin/register";
+    const url = isLogin
+      ? `${BASE_URL}/api/auth/admin/login`
+      : `${BASE_URL}/api/auth/admin/register`;
 
     const payload = isLogin ? { email, password } : { name, email, password };
 
     try {
       const response = await axios.post(url, payload);
       const data = response.data;
-
-      if (response.status === 201 && data.token) {
+      console.log(data, "-===============================");
+      if (data.success === true && data.token) {
         toast.success(isLogin ? "Login successful" : "Registration successful");
 
         if (isLogin) {
@@ -257,7 +260,7 @@ const SellerLogin = () => {
   useEffect(() => {
     console.log("Seller status changed:", isSeller);
     if (isSeller) {
-      navigate("/seller");
+      navigate("/seller/products");
     }
   }, [isSeller, navigate]);
 

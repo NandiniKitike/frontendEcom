@@ -3,13 +3,14 @@ import { useAppContext } from "../../context/AppContext";
 import { assets } from "../../assets/assets";
 import toast from "react-hot-toast";
 import { NavLink, Outlet, Link } from "react-router-dom";
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../../constant";
+
 const SellerLayout = () => {
   const { navigate } = useAppContext();
 
   const logout = async () => {
     try {
-      const { data } = await axios.post(`${API_BASE_URL}/api/auth/logoutadmin`);
+      const { data } = await axios.post(`${BASE_URL}/api/auth/logoutadmin`);
       if (data.success) {
         toast.success(data.message);
         navigate("/");

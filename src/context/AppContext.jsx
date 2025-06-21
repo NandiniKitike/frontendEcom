@@ -257,13 +257,12 @@ import { useNavigate } from "react-router-dom";
 import { dummyProducts } from "../assets/assets";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../../constant";
 
 // Axios config
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL =
-  import.meta.env.VITE_BACKEND_URL || "https://e-commerce-mbth.onrender.com";
-
-const API_BASE_URL = axios.defaults.baseURL;
+// axios.defaults.baseURL =
+//   import.meta.env.VITE_BACKEND_URL || "https://e-commerce-mbth.onrender.com";
 
 export const AppContext = createContext();
 
@@ -302,7 +301,7 @@ export const AppContextProvider = ({ children }) => {
   const fetchCart = async () => {
     try {
       const token = localStorage.getItem("bearerToken")?.trim();
-      const res = await axios.get(`${API_BASE_URL}/api/cart/getcart`, {
+      const res = await axios.get(`${BASE_URL}/api/cart/getcart`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -324,7 +323,7 @@ export const AppContextProvider = ({ children }) => {
       const token = localStorage.getItem("bearerToken")?.trim();
       if (!token) throw new Error("Token not found");
 
-      const res = await axios.get(`${API_BASE_URL}/api/auth/auth/me`, {
+      const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -341,7 +340,7 @@ export const AppContextProvider = ({ children }) => {
 
   const fetchAdmin = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/auth/Admin/me`);
+      const res = await axios.get(`${BASE_URL}/api/auth/Admin/me`);
       setIsSellerState(res.data.user);
     } catch (err) {
       console.error("Not logged in or invalid token", err.message);
@@ -357,7 +356,7 @@ export const AppContextProvider = ({ children }) => {
       if (!token) throw new Error("User is not authenticated");
 
       const res = await axios.post(
-        `${API_BASE_URL}/api/cart/add`,
+        `${BASE_URL}/api/cart/add`,
         {
           items: [{ product_id: productId, quantity }],
         },
@@ -394,7 +393,7 @@ export const AppContextProvider = ({ children }) => {
       const updatedQty = existingItem ? existingItem.quantity + newQty : newQty;
 
       const res = await axios.put(
-        `${API_BASE_URL}/api/cart/update`,
+        `${BASE_URL}/api/cart/update`,
         {
           product_id: productId,
           quantity: updatedQty,
@@ -423,7 +422,7 @@ export const AppContextProvider = ({ children }) => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("bearerToken");
-      const res = await axios.delete(`${API_BASE_URL}/api/cart/remove/${id}`, {
+      const res = await axios.delete(`${BASE_URL}/api/cart/remove/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

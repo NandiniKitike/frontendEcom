@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAppContext } from "../context/AppContext";
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../constant";
+
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
   const { currency, user } = useAppContext();
@@ -10,7 +11,7 @@ const MyOrders = () => {
     try {
       const token = localStorage.getItem("bearerToken");
 
-      const { data } = await axios.get(`${API_BASE_URL}/api/orders/user`, {
+      const { data } = await axios.get(`${BASE_URL}/api/orders/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

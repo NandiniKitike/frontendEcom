@@ -54,9 +54,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
-
-// ✅ Use global axios base URL
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../constant";
 
 const CategoryProducts = () => {
   const { categoryId } = useParams();
@@ -67,7 +65,7 @@ const CategoryProducts = () => {
     const fetchProductsByCategory = async () => {
       try {
         const res = await axios.get(
-          `${API_BASE_URL}/api/products/category/${categoryId}`
+          `${BASE_URL}/api/products/category/${categoryId}`
         );
         if (res.data.success && Array.isArray(res.data.products)) {
           setProducts(res.data.products);

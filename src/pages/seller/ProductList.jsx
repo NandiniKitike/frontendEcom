@@ -7,7 +7,8 @@ import axios from "axios";
 import { Edit3 } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
-const API_BASE_URL = axios.defaults.baseURL;
+import { BASE_URL } from "../../../constant";
+
 const ProductList = () => {
   const { currency } = useAppContext();
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const ProductList = () => {
     if (confirmDelete) {
       try {
         const token = localStorage.getItem("bearerToken");
-        await axios.delete("${API_BASE_URL}/api/Products/delProduct/" + id, {
+        await axios.delete(`${BASE_URL}/api/Products/delProduct/` + id, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -42,7 +43,7 @@ const ProductList = () => {
   const toggleStock = async (id) => {
     try {
       const { data } = await axios.put(
-        `${API_BASE_URL}/api/products/toggle-stock/${id}`
+        `${BASE_URL}/api/products/toggle-stock/${id}`
       );
 
       toast.success(data.message);
@@ -64,7 +65,7 @@ const ProductList = () => {
       try {
         const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
-          `${API_BASE_URL}/api/Products/getAllProducts?page=${page}&limit=${limit}`,
+          `${BASE_URL}/api/Products/getAllProducts?page=${page}&limit=${limit}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

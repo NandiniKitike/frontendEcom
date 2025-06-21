@@ -73,9 +73,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAppContext } from "../context/AppContext";
+import { BASE_URL } from "../../constant";
 
 // ✅ Use base URL from axios default config
-const API_BASE_URL = axios.defaults.baseURL;
 
 const Categories = () => {
   const { navigate } = useAppContext();
@@ -84,9 +84,7 @@ const Categories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(
-          `${API_BASE_URL}/api/categories/getCategories`
-        );
+        const res = await axios.get(`${BASE_URL}/api/categories/getCategories`);
         console.log("API response:", res.data);
 
         if (res.data.success && Array.isArray(res.data.categories)) {
