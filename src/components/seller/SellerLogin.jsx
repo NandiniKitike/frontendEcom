@@ -242,7 +242,7 @@ const SellerLogin = () => {
         if (isLogin) {
           localStorage.setItem("bearerToken", data.token);
           setIsSeller(true); // Update context and localStorage
-          navigate("/seller/product-list");
+          navigate("/seller");
         } else {
           setIsLogin(true); // Switch to login after successful registration
         }
