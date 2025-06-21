@@ -287,7 +287,9 @@ export const AppContextProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/auth/auth/me`);
+      const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
+        withCredentials: true,
+      });
       setUser(res.data.user);
     } catch (err) {
       console.error("Not logged in or invalid token", err.message);
