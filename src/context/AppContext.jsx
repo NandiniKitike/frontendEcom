@@ -321,6 +321,9 @@ export const AppContextProvider = ({ children }) => {
         fetchCart();
         toast.success("Item added to cart successfully!");
       }
+      if (!user) {
+        toast.success("please login");
+      }
 
       return res.data;
     } catch (error) {
