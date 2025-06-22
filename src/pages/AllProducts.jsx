@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import axios from "axios";
-// import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/AppContext";
 import { BASE_URL } from "../../constant";
 
 const AllProducts = () => {
-  const [setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   // const [searchQuery, setSearchQuery] = useState("");
-  // const { searchQuery, setSearchQuery } = useAppContext();
+  const { searchQuery } = useAppContext();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,17 +25,17 @@ const AllProducts = () => {
   }, []);
 
   //  Update filtered products based on search
-  // useEffect(() => {
-  //   if (searchQuery.length > 0) {
-  //     setFilteredProducts(
-  //       products.filter((product) =>
-  //         product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  //       )
-  //     );
-  //   } else {
-  //     setFilteredProducts(products);
-  //   }
-  // }, [products, searchQuery]);
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      setFilteredProducts(
+        products.filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredProducts(products);
+    }
+  }, [products, searchQuery]);
 
   return (
     <div className="flex flex-col mt-11">
@@ -43,6 +43,8 @@ const AllProducts = () => {
         <p className="uppercase text-2xl font-medium">All products</p>
         <div className="w-16 h-0.5 bg-green-500 rounded-full"></div>
       </div>
+
+      {/* Optional search bar  */}
 
       <div className="grid mt-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 lg:grid-cols-5">
         {filteredProducts
