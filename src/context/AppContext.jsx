@@ -301,7 +301,9 @@ export const AppContextProvider = ({ children }) => {
 
   const fetchAdmin = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/api/auth/Admin/me`);
+      const res = await axios.get(`${BASE_URL}/api/auth/Admin/me`, {
+        withCredentials: true,
+      });
       setIsSellerState(res.data.user);
     } catch (err) {
       console.error("Not logged in or invalid token", err.message);
@@ -320,9 +322,6 @@ export const AppContextProvider = ({ children }) => {
       if (res.data.success) {
         fetchCart();
         toast.success("Item added to cart successfully!");
-      }
-      if (!user) {
-        toast.success("please login");
       }
 
       return res.data;

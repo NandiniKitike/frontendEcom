@@ -142,7 +142,6 @@ const ProductDetails = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 addToCartAPI(product._id, 1);
-                handleBuyNow();
               }}
             >
               Add to Cart
