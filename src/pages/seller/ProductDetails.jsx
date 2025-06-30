@@ -9,7 +9,7 @@ import ProductCard from "../../components/ProductCard";
 import { IoStar } from "react-icons/io5";
 import { IoStarOutline } from "react-icons/io5";
 import { BASE_URL } from "../../../constant";
-
+import { IoIosArrowBack } from "react-icons/io";
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -76,6 +76,14 @@ const ProductDetails = () => {
 
   return (
     <div className="max-w-6xl w-full px-6">
+      <div className="block lg:hidden absolute top-4 left-4 z-10">
+        <button
+          onClick={() => navigate(-1)} // go back
+          className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
+        >
+          <IoIosArrowBack className="text-2xl text-black" />
+        </button>
+      </div>
       <p>
         <Link to={"/"}>Home</Link>/<Link to={"/products"}> Products</Link>/
         <Link

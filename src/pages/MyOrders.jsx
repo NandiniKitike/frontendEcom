@@ -3,10 +3,12 @@ import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 import { BASE_URL } from "../../constant";
 
+import { IoIosArrowBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
   const { currency, user } = useAppContext();
-
+  const navigate = useNavigate();
   const fetchMyOrders = async () => {
     try {
       const token = localStorage.getItem("bearerToken");
@@ -33,7 +35,15 @@ const MyOrders = () => {
 
   return (
     <div className="mt-16 pb-16">
-      <div className="flex flex-col items-end w-max mb-8">
+      <div className="block lg:hidden absolute top-4 left-4 z-10">
+        <button
+          onClick={() => navigate(-1)} // go back
+          className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
+        >
+          <IoIosArrowBack className="text-2xl text-black" />
+        </button>
+      </div>
+      <div className="flex flex-col items-start mb-8">
         <p className="text-2xl font-medium uppercase text-black">My Orders</p>
         <div className="w-16 h-0.5 bg-gray-500 rounded-full"></div>
       </div>
@@ -47,17 +57,16 @@ const MyOrders = () => {
               key={index}
               className="border border-gray-300 rounded-lg mb-10 p-4 py-5 max-w-4xl"
             >
-              <p className="flex justify-between md:items-center text-black md:font-medium mx-md:flex-col">
+              <div className="flex flex-col sm:flex-col md:flex-row justify-between md:items-center text-black font-medium gap-1 sm:gap-2 mb-2">
                 <span>OrderId: {order._id}</span>
                 <span>Payment: {order.payment_method}</span>
                 <span>
                   Total Amount: {currency}
                   {order.total_amount}
                 </span>
-              </p>
+              </div>
 
               <p className="text-sm text-gray-600 mb-4">
-                {/* Address: {order.address_id?.address_line1},{" "} */}
                 {order.address_id?.city}, {order.address_id?.state}
               </p>
 
@@ -66,10 +75,10 @@ const MyOrders = () => {
                   key={item._id || idx}
                   className={`relative bg-white text-gray-500 ${
                     order.orderItems.length !== idx + 1 ? "border-b" : ""
-                  } border-black-500 flex flex-col md:flex-row md:items-center justify-between p-4 py-5 md:gap-16 w-full max-w-4xl`}
+                  } border-black-500 flex flex-col md:flex-row md:items-center justify-between p-4 py-5 gap-4`}
                 >
-                  <div className="flex items-center mb-4 md:mb-0">
-                    <div className="bg-black-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-black-200 rounded-lg flex-shrink-0">
                       <img
                         src={
                           item.product_id?.images?.length > 0
@@ -77,20 +86,20 @@ const MyOrders = () => {
                             : "https://via.placeholder.com/64"
                         }
                         alt="product"
-                        className="w-16 h-16"
+                        className="w-16 h-16 object-cover rounded"
                       />
                     </div>
-                    <div className="ml-4">
-                      <h2 className="text-xl font-medium text-black">
+                    <div>
+                      <h2 className="text-lg font-medium text-black">
                         {item.product_id?.name ?? "Unknown Product"}
                       </h2>
-                      <p>
+                      <p className="text-xs text-gray-500">
                         Category ID: {item.product_id?.category_id ?? "N/A"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="text-gray-500 text-lg font-medium">
+                  <div className="text-gray-600 text-sm md:text-base font-medium">
                     <p>Quantity: {item.quantity ?? 1}</p>
                     <p>Status: {order.status ?? "Pending"}</p>
                     <p>
@@ -98,7 +107,7 @@ const MyOrders = () => {
                     </p>
                   </div>
 
-                  <p className="text-black-300 text-lg font-medium">
+                  <p className="text-black font-medium text-base">
                     Amount: {currency}
                     {(item.price ?? 0) * (item.quantity ?? 1)}
                   </p>
@@ -111,5 +120,4 @@ const MyOrders = () => {
     </div>
   );
 };
-
 export default MyOrders;

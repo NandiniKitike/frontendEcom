@@ -83,7 +83,8 @@ const BestSeller = () => {
   return (
     <div className="mt-16">
       <p className="text-2xl md:text-3xl font-medium text-black">Best Seller</p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-6">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6"> */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6 place-items-center">
         {bestSellers.length === 0 ? (
           <p>No best sellers found.</p>
         ) : (

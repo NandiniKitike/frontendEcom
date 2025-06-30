@@ -4,12 +4,15 @@ import axios from "axios";
 import { useAppContext } from "../context/AppContext";
 import { BASE_URL } from "../../constant";
 
+import { useNavigate } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
+// import { useNavigate } from "react-router-dom";
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   // const [searchQuery, setSearchQuery] = useState("");
   const { searchQuery } = useAppContext();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -39,6 +42,15 @@ const AllProducts = () => {
 
   return (
     <div className="flex flex-col mt-11">
+      <div className="block lg:hidden absolute top-4 left-4 z-10">
+        <button
+          onClick={() => navigate(-1)} // go back
+          className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
+        >
+          <IoIosArrowBack className="text-2xl text-black" />
+        </button>
+      </div>
+
       <div className="flex flex-col mb-2 items-start">
         <p className="uppercase text-2xl font-medium">All products</p>
         <div className="w-16 h-0.5 bg-green-500 rounded-full"></div>
@@ -46,7 +58,7 @@ const AllProducts = () => {
 
       {/* Optional search bar  */}
 
-      <div className="grid mt-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 lg:grid-cols-5">
+      <div className="grid sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
         {filteredProducts
           .filter((product) => product.is_active)
           .map((product) => (

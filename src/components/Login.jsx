@@ -188,7 +188,7 @@ const Login = () => {
           setName("");
           setEmail("");
           setPassword("");
-          navigate("/seller");
+          navigate("/");
         } else {
           toast.error(data.message);
         }

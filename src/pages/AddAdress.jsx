@@ -40,13 +40,9 @@ const AddAdress = () => {
     e.preventDefault();
 
     try {
-      const res = await axios(`${BASE_URL}/api/Address/createAdr`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // 🔒 VERY IMPORTANT
-        body: JSON.stringify({
+      const res = await axios.post(
+        `${BASE_URL}/api/Address/createAdr`,
+        {
           address_line1: address.street,
           address_line2: `${address.firstName} ${address.lastName}`,
           city: address.city,
@@ -54,17 +50,23 @@ const AddAdress = () => {
           postal_code: address.zipcode,
           country: address.country,
           is_default: true,
-        }),
-      });
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const data = await res.json();
+      const data = res.data;
 
-      if (res.ok) {
-        alert("Address created successfully");
+      if (res.status === 201 || data?.success) {
+        alert("✅ Address created successfully");
         navigate("/cart");
         console.log(data);
       } else {
-        alert(`❌ Failed: ${data.message}`);
+        alert(`❌ Failed: ${data?.message || "Unexpected error"}`);
         console.error(data);
       }
     } catch (err) {

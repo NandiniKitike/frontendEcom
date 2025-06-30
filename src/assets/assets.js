@@ -73,10 +73,14 @@ import address_image from "./address_image.png";
 import bannervid from "./bannervid.mp4";
 import bannerfirst from "./bannerfirst.mp4";
 import green from "./green.png";
+import first from "./first.jpg";
+import zent from "./zent.png";
 export const assets = {
   logo,
   bannerfirst,
   green,
+  zent,
+  first,
   bannervid,
   search_icon,
   remove_icon,

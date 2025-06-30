@@ -55,6 +55,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProductCard from "../components/ProductCard";
 import { BASE_URL } from "../../constant";
+import { IoIosArrowBack } from "react-icons/io";
 
 const CategoryProducts = () => {
   const { categoryId } = useParams();
@@ -84,11 +85,19 @@ const CategoryProducts = () => {
 
   return (
     <div className="mt-16 px-4">
+      <div className="block lg:hidden absolute top-4 left-4 z-10">
+        <button
+          onClick={() => navigate(-1)} // go back
+          className="p-2 bg-white rounded-full shadow hover:bg-gray-100"
+        >
+          <IoIosArrowBack className="text-2xl text-black" />
+        </button>
+      </div>
       <h2 className="text-2xl font-semibold mb-4">Products</h2>
       {products.length === 0 ? (
         <p>No products found in this category.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {products.map((product) => (
             <ProductCard
               key={product._id}

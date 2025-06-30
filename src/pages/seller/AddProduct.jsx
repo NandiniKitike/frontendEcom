@@ -344,10 +344,10 @@ const AddProduct = () => {
             />
           </div>
           <div className="flex-1 flex flex-col gap-1 w-32">
-            {/* <label className="text-base font-medium" htmlFor="offer-price">
+            <label className="text-base font-medium" htmlFor="offer-price">
               stock_quantity
-            </label> */}
-            {/* <input
+            </label>
+            <input
               type="number"
               id="stock_quantity"
               value={stock_quantity}
@@ -355,7 +355,7 @@ const AddProduct = () => {
               placeholder="0"
               required
               className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-            /> */}
+            />
           </div>
         </div>
         <button
