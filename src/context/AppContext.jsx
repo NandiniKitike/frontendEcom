@@ -109,11 +109,41 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // const addToCartAPI = async (productId, quantity = 1) => {
+  //   try {
+  //     const res = await axios.post(`${BASE_URL}/api/cart/add`, {
+  //       items: [{ product_id: productId, quantity }],
+  //     });
+
+  //     if (res.data.success) {
+  //       fetchCart();
+  //       toast.success("Item added to cart successfully!");
+  //     }
+
+  //     return res.data;
+  //   } catch (error) {
+  //     throw (
+  //       error.response?.data?.message ||
+  //       error.message ||
+  //       "Failed to add to cart"
+  //     );
+  //   }
+  // };
   const addToCartAPI = async (productId, quantity = 1) => {
     try {
-      const res = await axios.post(`${BASE_URL}/api/cart/add`, {
-        items: [{ product_id: productId, quantity }],
-      });
+      const token = localStorage.getItem("bearerToken"); // get token from localStorage
+
+      const res = await axios.post(
+        `${BASE_URL}/api/cart/add`,
+        {
+          items: [{ product_id: productId, quantity }],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // add token to header
+          },
+        }
+      );
 
       if (res.data.success) {
         fetchCart();
@@ -129,7 +159,6 @@ export const AppContextProvider = ({ children }) => {
       );
     }
   };
-
   const upadteToCartAPI = async (productId, newQty = 1) => {
     try {
       const existingItem = cartItems.find((item) => {
