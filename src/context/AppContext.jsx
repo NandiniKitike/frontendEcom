@@ -97,9 +97,14 @@ export const AppContextProvider = ({ children }) => {
 
   const fetchAdmin = async () => {
     try {
+      const token = localStorage.getItem("bearerToken");
+
       const res = await axios.get(`${BASE_URL}/api/auth/Admin/me`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       setIsSellerState(res.data.user);
     } catch (err) {
       console.error("Not logged in or invalid token", err.message);
@@ -161,6 +166,8 @@ export const AppContextProvider = ({ children }) => {
   };
   const upadteToCartAPI = async (productId, newQty = 1) => {
     try {
+      const token = localStorage.getItem("bearerToken");
+
       const existingItem = cartItems.find((item) => {
         const id =
           typeof item.product_id === "object"
@@ -168,12 +175,21 @@ export const AppContextProvider = ({ children }) => {
             : item.product_id;
         return id === productId;
       });
+
       const updatedQty = existingItem ? existingItem.quantity + newQty : newQty;
 
-      const res = await axios.put(`${BASE_URL}/api/cart/update`, {
-        product_id: productId,
-        quantity: updatedQty,
-      });
+      const res = await axios.put(
+        `${BASE_URL}/api/cart/update`,
+        {
+          product_id: productId,
+          quantity: updatedQty,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (res.data.success) {
         await fetchCart();
@@ -191,7 +207,14 @@ export const AppContextProvider = ({ children }) => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await axios.delete(`${BASE_URL}/api/cart/remove/${id}`);
+      const token = localStorage.getItem("bearerToken");
+
+      const res = await axios.delete(`${BASE_URL}/api/cart/remove/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (res.data.success) {
         await fetchCart();
         console.log("Item deleted successfully.");
