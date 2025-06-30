@@ -20,7 +20,7 @@ export const AppContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [showUserLogin, setShowUserLogin] = useState(false);
   const [products, setProducts] = useState([]);
-  const [cartItems, setCartItems] = useState({});
+  const [cartItems, setCartItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingAdmin, setLoadingAdmin] = useState(true);
@@ -41,21 +41,46 @@ export const AppContextProvider = ({ children }) => {
     if (savedAdmin) setIsSellerState(JSON.parse(savedAdmin));
   }, []);
 
+  // const fetchCart = async () => {
+  //   try {
+  //     const res = await axios.get(`${BASE_URL}/api/cart/getcart`);
+  //     const cart = res.data.cart;
+  //     const items = cart?.[0]?.items || [];
+
+  //     setCartItems(items);
+
+  //     const totalCount = items.reduce(
+  //       (total, item) => total + item.quantity,
+  //       0
+  //     );
+  //     setCount(totalCount);
+  //   } catch (err) {
+  //     console.error("Failed to fetch cart:", err);
+  //     setCartItems([]);
+  //     setCount(0);
+  //   }
+  // };
   const fetchCart = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/cart/getcart`);
-      setCartItems(res.data.cart[0]?.items || []);
-      setCount(
-        res.data.cart[0]?.items.reduce(
-          (total, item) => total + item.quantity,
-          0
-        )
+      const cart = res.data.cart;
+      const items = cart?.[0]?.items || [];
+
+      console.log("Fetched cart items:", items); // 🔍 Check if product_id is populated
+
+      setCartItems(items);
+
+      const totalCount = items.reduce(
+        (total, item) => total + item.quantity,
+        0
       );
+      setCount(totalCount);
     } catch (err) {
       console.error("Failed to fetch cart:", err);
+      setCartItems([]);
+      setCount(0);
     }
   };
-
   const fetchUser = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
@@ -107,9 +132,13 @@ export const AppContextProvider = ({ children }) => {
 
   const upadteToCartAPI = async (productId, newQty = 1) => {
     try {
-      const existingItem = cartItems.find(
-        (item) => item.product_id === productId
-      );
+      const existingItem = cartItems.find((item) => {
+        const id =
+          typeof item.product_id === "object"
+            ? item.product_id._id
+            : item.product_id;
+        return id === productId;
+      });
       const updatedQty = existingItem ? existingItem.quantity + newQty : newQty;
 
       const res = await axios.put(`${BASE_URL}/api/cart/update`, {
@@ -145,11 +174,24 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // useEffect(() => {
+  //   fetchProducts();
+  //   fetchUser();
+  //   fetchCart();
+  // }, []);
   useEffect(() => {
     fetchProducts();
     fetchUser();
-    fetchCart();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchCart();
+    } else {
+      setCartItems([]);
+      setCount(0);
+    }
+  }, [user]);
 
   useEffect(() => {
     fetchAdmin();

@@ -785,26 +785,32 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("COD");
   const navigate = useNavigate();
-  const { upadteToCartAPI, setCartItems, cartItems, handleDelete } =
-    useAppContext();
+  const {
+    upadteToCartAPI,
+    setCartItems,
+    cartItems,
+    setCount,
+    fetchCart,
+    handleDelete,
+  } = useAppContext();
 
-  const fetchCart = async () => {
-    try {
-      const token = localStorage.getItem("bearerToken");
-      const res = await axios.get(`${BASE_URL}/api/cart/getcart`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.data.success && res.data.cart.length > 0) {
-        setCartItems(res.data.cart[0].items);
-      } else {
-        setCartItems([]);
-      }
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-    }
-  };
+  // const fetchCart = async () => {
+  //   try {
+  //     const token = localStorage.getItem("bearerToken");
+  //     const res = await axios.get(`${BASE_URL}/api/cart/getcart`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //     if (res.data.success && res.data.cart.length > 0) {
+  //       setCartItems(res.data.cart[0].items);
+  //     } else {
+  //       setCartItems([]);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching cart:", error);
+  //   }
+  // };
 
   const fetchAddresses = async () => {
     try {
@@ -902,6 +908,7 @@ const Cart = () => {
         });
 
         setCartItems([]);
+        setCount(0);
         navigate("/my-orders");
       }
     } catch (error) {
