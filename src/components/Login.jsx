@@ -142,7 +142,7 @@ import { useAppContext } from "../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { BASE_URL } from "../../constant";
+import { BASE_URL, setCookie } from "../../constant";
 
 // ✅ Use baseURL from axios config
 
@@ -167,9 +167,13 @@ const Login = () => {
         console.log("API Response:", data);
 
         if (data.success) {
-          document.cookie = `token=${data.user.token}; path=/; max-age=86400; SameSite=Strict;`;
+          setCookie("token", data.data.token, 7);
 
-          // ✅ Set token in axios headers for future requests
+          localStorage.setItem("user", JSON.stringify(data.user));
+          if (data.user.role === "admin") {
+            localStorage.setItem("admin", JSON.stringify(true));
+          }
+
           axios.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${data.user.token}`;
