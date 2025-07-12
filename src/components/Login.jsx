@@ -167,6 +167,13 @@ const Login = () => {
         console.log("API Response:", data);
 
         if (data.success) {
+          document.cookie = `token=${data.user.token}; path=/; max-age=86400; SameSite=Strict;`;
+
+          // ✅ Set token in axios headers for future requests
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${data.user.token}`;
+
           setUser(data.user);
           setShowUserLogin(false);
 
