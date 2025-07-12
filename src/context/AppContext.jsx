@@ -85,7 +85,7 @@ export const AppContextProvider = ({ children }) => {
   const fetchUser = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
-        withCredentials: true,
+        credentials: "include",
       });
       setUser(res.data.user);
     } catch (err) {
