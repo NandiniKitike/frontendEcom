@@ -5,9 +5,7 @@ export const BASE_URL = "https://e-commerce-mbth.onrender.com";
 export const setCookie = (name, value, days) => {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict;Secure=${
-    window.location.protocol === "https:"
-  }`;
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=None;Secure`;
 };
 
 export const deleteCookie = (name) => {
