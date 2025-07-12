@@ -36,6 +36,7 @@ export const AppContextProvider = ({ children }) => {
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
+    console.log("saved user", savedUser);
     const savedAdmin = localStorage.getItem("admin");
     if (savedUser) setUser(JSON.parse(savedUser));
     if (savedAdmin) setIsSellerState(JSON.parse(savedAdmin));
