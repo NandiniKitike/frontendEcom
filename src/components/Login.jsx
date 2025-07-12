@@ -167,9 +167,12 @@ const Login = () => {
         console.log("API Response:", data);
 
         if (data.success) {
-          setCookie("token", data.user.token, 7);
+          console.log("success");
 
+          setCookie("token", data.user?.token, 7);
+          console.log("toke set", data.user?.token);
           localStorage.setItem("user", JSON.stringify(data.user));
+          console.log("checkeg role", data.user.role);
           if (data.user.role === "admin") {
             localStorage.setItem("admin", JSON.stringify(true));
           }
