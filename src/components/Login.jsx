@@ -167,7 +167,7 @@ const Login = () => {
         console.log("API Response:", data);
 
         if (data.success) {
-          setCookie("token", data.data.token, 7);
+          setCookie("token", data.user.token, 7);
 
           localStorage.setItem("user", JSON.stringify(data.user));
           if (data.user.role === "admin") {
