@@ -82,24 +82,13 @@ export const AppContextProvider = ({ children }) => {
       setCount(0);
     }
   };
-  // const fetchUser = async () => {
-  //   try {
-  //     const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
-  //       credentials: "include",
-  //     });
-  //     setUser(res.data.user);
-  //   } catch (err) {
-  //     console.error("Not logged in or invalid token", err.message);
-  //     setUser(null);
-  //   } finally {
-  //     setLoadingUser(false);
-  //   }
-  // };
 
   const fetchUser = async () => {
     try {
-      let userData = user;
-      setUser(userData);
+      const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
+        credentials: "include",
+      });
+      setUser(res.data.user);
     } catch (err) {
       console.error("Not logged in or invalid token", err.message);
       setUser(null);
