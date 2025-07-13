@@ -4,7 +4,7 @@ import { useAppContext } from "../context/AppContext";
 import { useEffect } from "react";
 import { PiShoppingCartThin } from "react-icons/pi";
 import { IoStar } from "react-icons/io5";
-
+import { toast } from "react-hot-toast";
 const ProductCard = ({ product }) => {
   const {
     currency,
@@ -14,12 +14,27 @@ const ProductCard = ({ product }) => {
     removeItem,
     navigate,
     addToCartAPI,
+    user,
   } = useAppContext();
 
   console.log(cartItems);
   useEffect(() => {
     fetchCart();
   }, []);
+  const handleBuyNow = async () => {
+    if (!user) {
+      toast.error("Please log in to continue.");
+      return;
+    }
+
+    try {
+      await addToCartAPI(product._id, 1);
+      navigate("/cart");
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
   return (
     product && (
       <div
@@ -82,7 +97,12 @@ const ProductCard = ({ product }) => {
                   }}
                 >
                   <PiShoppingCartThin className="text-lg text-white" />
-                  <span className="text-sm font-medium text-white">Add</span>
+                  <span
+                    onClick={handleBuyNow}
+                    className="text-sm font-medium text-white"
+                  >
+                    Add
+                  </span>
                 </button>
               ) : (
                 <div className="flex items-center justify-center gap-2 md:w-20 w-16 h-[34px] bg-black rounded select-none">
