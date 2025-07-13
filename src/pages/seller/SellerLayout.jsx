@@ -6,19 +6,41 @@ import { NavLink, Outlet, Link } from "react-router-dom";
 import { BASE_URL } from "../../../constant";
 
 const SellerLayout = () => {
-  const { navigate } = useAppContext();
+  const { navigate, setUser } = useAppContext();
 
+  // const logout = async () => {
+  //   try {
+  //     const { data } = await axios.post(`${BASE_URL}/api/auth/logoutadmin`);
+  //     if (data.success) {
+  //       toast.success(data.message);
+  //       navigate("/");
+  //     } else {
+  //       toast.success(data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.success(error.message);
+  //   }
+  // };
   const logout = async () => {
     try {
-      const { data } = await axios.post(`${BASE_URL}/api/auth/logoutadmin`);
-      if (data.success) {
-        toast.success(data.message);
-        navigate("/");
-      } else {
-        toast.success(data.message);
-      }
-    } catch (error) {
-      toast.success(error.message);
+      // 🛑 Call backend to clear cookie
+      await axios.post(
+        `${BASE_URL}/api/auth/logoutadmin`,
+        {},
+        { withCredentials: true } // send cookie
+      );
+
+      // 🧹 Clean frontend state
+      localStorage.removeItem("bearerToken");
+      localStorage.removeItem("user");
+      delete axios.defaults.headers.common["Authorization"];
+      setUser(null);
+
+      toast.success("Logged out successfully");
+      navigate("/");
+    } catch (err) {
+      console.error("Logout error:", err);
+      toast.error("Logout failed. Please try again.");
     }
   };
 
