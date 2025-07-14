@@ -83,24 +83,24 @@ const EditCategory = () => {
     setIsLoading(true);
 
     try {
-      const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
-      const token = adminData?.token;
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      const token = userData?.token;
 
       if (!token) {
-        toast.error("❌ Admin token missing. Please login again.");
+        toast.error("❌ Authentication token missing. Please login again.");
         setIsLoading(false);
         return;
       }
 
       if (!id) {
-        toast.error("Invalid category ID");
+        toast.error("❌ Invalid category ID");
         setIsLoading(false);
         return;
       }
 
       let imageUrl = previewImage;
 
-      // Upload new image if changed
+      // 📦 Upload new image if changed
       if (image) {
         const imageFormData = new FormData();
         imageFormData.append("files", image);
@@ -120,19 +120,19 @@ const EditCategory = () => {
         imageUrl = Array.isArray(uploadedUrls) ? uploadedUrls[0] : uploadedUrls;
 
         if (!imageUrl) {
-          toast.error("Image upload failed. Keeping existing image.");
+          toast.error("❌ Image upload failed. Keeping existing image.");
           imageUrl = previewImage || null;
         }
       }
 
-      // Update category
+      // 🚀 Update category API
       const res = await axios.put(
         `${BASE_URL}/api/categories/categoryupdate/${id}`,
         {
           name,
           description,
           images: imageUrl ? [imageUrl] : [],
-          is_active: status === "active",
+          is_active: (status || "").toLowerCase() === "active",
         },
         {
           headers: {
@@ -142,15 +142,18 @@ const EditCategory = () => {
         }
       );
 
-      if (res.data?.success) {
+      console.log("Update Response:", res.data); // 🪵 Debug API response
+
+      // ✅ Check API success
+      if (res.data?.success || res.data?.status || res.status === 200) {
         toast.success("✅ Category updated successfully");
         navigate("/seller/category-list", { replace: true });
       } else {
-        toast.error(res.data?.message || "Update failed");
+        toast.error(res.data?.message || "❌ Update failed");
       }
     } catch (error) {
       console.error("Update Error:", error);
-      toast.error(error.response?.data?.message || "Update failed");
+      toast.error(error.response?.data?.message || "❌ Update failed");
     } finally {
       setIsLoading(false);
     }

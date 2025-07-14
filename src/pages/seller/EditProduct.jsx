@@ -106,7 +106,7 @@ const EditProduct = () => {
       let uploadedImageUrls = [];
       const hasNewImages = file.some((img) => img !== null);
 
-      // Upload new images if provided
+      // 📦 Upload new images if provided
       if (hasNewImages) {
         const imageFormData = new FormData();
         file.forEach((img) => {
@@ -135,7 +135,7 @@ const EditProduct = () => {
         }
       }
 
-      // Merge existing and new images
+      // 🖼 Merge existing and new images
       const finalImages = existingImages
         .map((oldImg, i) => (file[i] ? uploadedImageUrls.shift() : oldImg))
         .filter(Boolean);
@@ -167,15 +167,18 @@ const EditProduct = () => {
         }
       );
 
-      if (updateRes.data?.success) {
+      console.log("Update Response:", updateRes.data); // 🪵 Debug API response
+
+      // ✅ Reliable success check
+      if (updateRes.data?.success || updateRes.status === 200) {
         toast.success("✅ Product updated successfully");
-        navigate("/seller");
+        navigate("/seller", { replace: true });
       } else {
-        toast.error(updateRes.data?.message || "Update failed");
+        toast.error(updateRes.data?.message || "❌ Update failed");
       }
     } catch (error) {
       console.error("Update failed:", error);
-      toast.error(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || "❌ Something went wrong");
     } finally {
       setIsLoading(false);
     }
