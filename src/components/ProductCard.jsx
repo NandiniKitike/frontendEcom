@@ -21,19 +21,6 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     fetchCart();
   }, []);
-  // const handleBuyNow = async () => {
-  //   if (!user) {
-  //     toast.error("Please log in to continue.");
-  //     return;
-  //   }
-
-  //   try {
-  //     await addToCartAPI(product._id, 1);
-  //     navigate("/cart");
-  //   } catch (err) {
-  //     toast.error(err);
-  //   }
-  // };
 
   return (
     product && (

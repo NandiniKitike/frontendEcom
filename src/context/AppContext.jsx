@@ -41,32 +41,13 @@ export const AppContextProvider = ({ children }) => {
     if (savedAdmin) setIsSellerState(JSON.parse(savedAdmin));
   }, []);
 
-  // const fetchCart = async () => {
-  //   try {
-  //     const res = await axios.get(`${BASE_URL}/api/cart/getcart`);
-  //     const cart = res.data.cart;
-  //     const items = cart?.[0]?.items || [];
-
-  //     setCartItems(items);
-
-  //     const totalCount = items.reduce(
-  //       (total, item) => total + item.quantity,
-  //       0
-  //     );
-  //     setCount(totalCount);
-  //   } catch (err) {
-  //     console.error("Failed to fetch cart:", err);
-  //     setCartItems([]);
-  //     setCount(0);
-  //   }
-  // };
   const fetchCart = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/api/cart/getcart`);
       const cart = res.data.cart;
       const items = cart?.[0]?.items || [];
 
-      console.log("Fetched cart items:", items); // 🔍 Check if product_id is populated
+      console.log("Fetched cart items:", items);
 
       setCartItems(items);
 
@@ -164,9 +145,58 @@ export const AppContextProvider = ({ children }) => {
   //     );
   //   }
   // };
+  // const addToCartAPI = async (productId, quantity = 1) => {
+  //   try {
+  //     const token = localStorage.getItem("bearerToken");
+
+  //     const res = await axios.post(
+  //       `${BASE_URL}/api/cart/add`,
+  //       {
+  //         items: [{ product_id: productId, quantity }],
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     if (res.data.success) {
+  //       fetchCart();
+  //       toast.success("Item added to cart successfully!");
+  //     }
+
+  //     return res.data;
+  //   } catch (error) {
+  //     throw (
+  //       error.response?.data?.message ||
+  //       error.message ||
+  //       "Failed to add to cart"
+  //     );
+  //   }
+  // };
+
   const addToCartAPI = async (productId, quantity = 1) => {
     try {
-      const token = localStorage.getItem("bearerToken"); // get token from localStorage
+      // Get user data from localStorage (not bearerToken)
+      const userData = localStorage.getItem("user");
+
+      if (!userData) {
+        console.error("No user data found in localStorage");
+        toast.error("Please login first");
+        return;
+      }
+
+      const user = JSON.parse(userData);
+      const token = user.token;
+
+      if (!token) {
+        console.error("No token found in user data");
+        toast.error("Please login again");
+        return;
+      }
+
+      console.log("Token being sent:", token); // Debug log
 
       const res = await axios.post(
         `${BASE_URL}/api/cart/add`,
@@ -175,23 +205,30 @@ export const AppContextProvider = ({ children }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // add token to header
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
-      if (res.data.success) {
-        fetchCart();
-        toast.success("Item added to cart successfully!");
-      }
-
+      console.log("Cart API response:", res.data);
       return res.data;
     } catch (error) {
-      throw (
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to add to cart"
-      );
+      console.error("Add to cart error:", error);
+
+      if (error.response?.status === 401) {
+        console.error("401 Unauthorized - Token might be expired or invalid");
+        toast.error("Session expired. Please login again.");
+
+        // Clear invalid token
+        localStorage.removeItem("user");
+        localStorage.removeItem("admin");
+        delete axios.defaults.headers.common["Authorization"];
+
+        // Redirect to login or refresh page
+        window.location.reload();
+      } else {
+        toast.error("Failed to add item to cart");
+      }
     }
   };
   const upadteToCartAPI = async (productId, newQty = 1) => {
