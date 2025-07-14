@@ -67,22 +67,37 @@ export const AppContextProvider = ({ children }) => {
 
     if (!userData) {
       setUser(null);
+      setCartItems([]); // clear cart if no user
+      setCount(0); // clear count too
       return;
     }
 
     const user = JSON.parse(userData);
+
     try {
       const res = await axios.get(`${BASE_URL}/api/cart/getcart`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
 
       if (res.data.success && res.data.cart.length > 0) {
-        setCartItems(res.data.cart[0].items); // ✅ Reactive update
+        const items = res.data.cart[0].items;
+
+        setCartItems(items);
+
+        // ✅ Calculate total item count
+        const totalCount = items.reduce(
+          (total, item) => total + (item.quantity || 0),
+          0
+        );
+        setCount(totalCount);
       } else {
-        setCartItems([]); // ✅ Clear if cart empty
+        setCartItems([]); // cart empty
+        setCount(0); // count empty
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
+      setCartItems([]);
+      setCount(0);
     }
   };
 
