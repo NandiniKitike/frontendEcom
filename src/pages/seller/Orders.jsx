@@ -10,34 +10,81 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const token = localStorage.getItem("bearerToken");
+      const adminData = localStorage.getItem("admin");
+      if (!adminData) {
+        toast.error("No authentication token found. Please login again.");
+        return;
+      }
+      const admin = JSON.parse(adminData);
 
       const { data } = await axios.get(`${BASE_URL}/api/orders/getallorder`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${admin.token}` },
       });
-      setOrders(data);
-      if (data.length === 0) toast.error("No orders found!");
+
+      if (Array.isArray(data) && data.length > 0) {
+        setOrders(data);
+      } else {
+        setOrders([]);
+        toast.error("No orders found!");
+      }
     } catch (error) {
-      toast.error(error.message);
+      console.error("Fetch Orders Error:", error);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
+  // const handleStatusChange = async (orderId, newStatus) => {
+  //   try {
+  //     const { data } = await axios.put(
+  //       `${BASE_URL}/api/orders/status/${orderId}`,
+  //       {
+  //         status: newStatus,
+  //       }
+  //     );
+  //     if (data.success) {
+  //       toast.success("Order status updated successfully!");
+  //       fetchOrders();
+  //     } else {
+  //       toast.error("Failed to update status.");
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.message || "Error updating status");
+  //   }
+  // };
   const handleStatusChange = async (orderId, newStatus) => {
+    if (!orderId || !newStatus) {
+      toast.error("Invalid order or status");
+      return;
+    }
+
     try {
+      const adminData = localStorage.getItem("admin");
+      if (!adminData) {
+        toast.error("No authentication token found. Please login again.");
+        return;
+      }
+      const admin = JSON.parse(adminData);
+
       const { data } = await axios.put(
         `${BASE_URL}/api/orders/status/${orderId}`,
+        { status: newStatus },
         {
-          status: newStatus,
+          headers: {
+            Authorization: `Bearer ${admin.token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
+
       if (data.success) {
         toast.success("Order status updated successfully!");
         fetchOrders();
       } else {
-        toast.error("Failed to update status.");
+        toast.error(data.message || "Failed to update status.");
       }
     } catch (error) {
-      toast.error(error.message || "Error updating status");
+      console.error("Status Change Error:", error);
+      toast.error(error.response?.data?.message || "Error updating status");
     }
   };
 

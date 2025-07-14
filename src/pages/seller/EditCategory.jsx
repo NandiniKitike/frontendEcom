@@ -19,21 +19,42 @@ const EditCategory = () => {
   // Fetch category data
   useEffect(() => {
     const fetchCategory = async () => {
+      if (!id) {
+        toast.error("Invalid category ID");
+        return;
+      }
+
       try {
-        const token = localStorage.getItem("user");
+        const adminData = localStorage.getItem("admin");
+        if (!adminData) {
+          toast.error("No authentication token found. Please login again.");
+          return;
+        }
+        const admin = JSON.parse(adminData);
+
         const { data } = await axios.get(
           `${BASE_URL}/api/categories/category/${id}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${admin.token}`,
+              "Content-Type": "application/json",
+            },
           }
         );
-        setName(data.name);
-        setDescription(data.description);
-        setStatus(data.is_active ? "active" : "inactive");
-        setPreviewImage(data.images?.[0] || "");
+
+        if (data) {
+          setName(data.name || "");
+          setDescription(data.description || "");
+          setStatus(data.is_active ? "active" : "inactive");
+          setPreviewImage(data.images?.[0] || "");
+        } else {
+          toast.error("Category details not found.");
+        }
       } catch (error) {
-        toast.error("Failed to fetch category details");
-        console.error("Fetch error:", error.response || error);
+        console.error("Fetch Category Error:", error.response || error);
+        toast.error(
+          error.response?.data?.message || "Failed to fetch category details"
+        );
       }
     };
 
@@ -45,9 +66,18 @@ const EditCategory = () => {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("user");
+      const userData = JSON.parse(localStorage.getItem("user"));
+      const token = userData?.token;
+
       if (!token) {
-        toast.error("Authentication token missing");
+        toast.error("Authentication token missing. Please login again.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!id) {
+        toast.error("Invalid category ID");
+        setIsLoading(false);
         return;
       }
 
@@ -59,7 +89,7 @@ const EditCategory = () => {
         imageFormData.append("files", image);
 
         const uploadRes = await axios.post(
-          `${BASE_URL}/api/Products/upload-image`,
+          `${BASE_URL}/api/products/upload-image`,
           imageFormData,
           {
             headers: {
@@ -69,10 +99,13 @@ const EditCategory = () => {
           }
         );
 
-        imageUrl = uploadRes.data?.url?.[0];
+        const uploadedUrls = uploadRes.data.url;
+        imageUrl = Array.isArray(uploadedUrls) ? uploadedUrls[0] : uploadedUrls;
+
         if (!imageUrl) throw new Error("Image upload failed");
       }
 
+      // Update category
       await axios.put(
         `${BASE_URL}/api/categories/categoryupdate/${id}`,
         {
@@ -90,10 +123,9 @@ const EditCategory = () => {
       );
 
       toast.success("Category updated successfully");
-
-      // force reload latest list after update
       navigate("/seller/category-list", { replace: true });
     } catch (error) {
+      console.error("Update Error:", error);
       toast.error(error.response?.data?.message || "Update failed");
     } finally {
       setIsLoading(false);
