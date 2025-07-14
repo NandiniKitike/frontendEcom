@@ -24,55 +24,81 @@ const EditProduct = () => {
   const [stock_quantity, setStock_quantity] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const token = localStorage.getItem("bearerToken");
+  useEffect(() => {
+    const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+    if (!adminData?.token) {
+      toast.error("❌ Admin token missing. Please login again.");
+      return;
+    }
 
-  //       const [categoryRes, productRes] = await Promise.all([
-  //         axios.get(`${BASE_URL}/api/categories/getCategories`, {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         }),
-  //         axios.get(`${BASE_URL}/api/products/getProduct/${id}`, {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         }),
-  //       ]);
+    const fetchData = async (token) => {
+      try {
+        setIsLoading(true);
 
-  //       setCategories(categoryRes.data);
+        const [categoryRes, productRes] = await Promise.all([
+          axios.get(`${BASE_URL}/api/categories/getCategories`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${BASE_URL}/api/products/getProduct/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-  //       const product = productRes.data;
-  //       setName(product.name);
-  //       setDescription(product.description);
-  //       setCategory(product.category_id);
-  //       setPrice(product.price);
-  //       setStock_quantity(product.stock_quantity);
-  //       const paddedImages = [
-  //         ...product.images,
-  //         ...Array(4 - product.images.length).fill(null),
-  //       ];
-  //       setExistingImages(paddedImages);
-  //     } catch (err) {
-  //       toast.error(err.response?.data?.message || "Failed to fetch data");
-  //     }
-  //   };
+        setCategories(categoryRes.data);
 
-  //   fetchData();
-  // }, [id]);
+        const product = productRes.data;
+        if (!product || productRes.data.success === false) {
+          toast.error(productRes.data?.message || "⚠️ Product not found.");
+          return;
+        }
+
+        setName(product.name || "");
+        setDescription(product.description || "");
+        setCategory(product.category_id || "");
+        setPrice(product.price || "");
+        setStock_quantity(product.stock_quantity || "");
+
+        const images = Array.isArray(product.images) ? product.images : [];
+        const paddedImages = [
+          ...images,
+          ...Array(4 - images.length).fill(null),
+        ];
+        setExistingImages(paddedImages);
+      } catch (err) {
+        console.error("FetchData Error:", err);
+        toast.error(err.response?.data?.message || "Failed to fetch data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData(adminData.token);
+  }, [id]);
 
   // const onSubmitHandler = async (e) => {
   //   e.preventDefault();
   //   setIsLoading(true);
 
   //   try {
-  //     const token = localStorage.getItem("admin");
+  //     const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+  //     const token = adminData.token;
+
+  //     if (!token) {
+  //       toast.error("❌ Admin token missing");
+  //       setIsLoading(false);
+  //       return;
+  //     }
+
   //     let uploadedImageUrls = [];
+  //     const hasNewImages = file.some(Boolean);
 
-  //     const imageFormData = new FormData();
-  //     file.forEach((img) => {
-  //       if (img) imageFormData.append("files", img);
-  //     });
+  //     // ✅ Upload only if new images are selected
+  //     if (hasNewImages) {
+  //       const imageFormData = new FormData();
+  //       file.forEach((img) => {
+  //         if (img) imageFormData.append("files", img);
+  //       });
 
-  //     if (file.some((img) => img)) {
   //       const uploadRes = await axios.post(
   //         `${BASE_URL}/api/Products/upload-image`,
   //         imageFormData,
@@ -83,12 +109,27 @@ const EditProduct = () => {
   //           },
   //         }
   //       );
-  //       uploadedImageUrls = uploadRes.data.url;
+
+  //       uploadedImageUrls = Array.isArray(uploadRes.data.url)
+  //         ? [...uploadRes.data.url]
+  //         : [uploadRes.data.url];
+
+  //       if (!uploadedImageUrls?.length) {
+  //         toast.error("❌ Image upload failed");
+  //         setIsLoading(false);
+  //         return;
+  //       }
   //     }
 
   //     const finalImages = existingImages
   //       .map((img, index) => (file[index] ? uploadedImageUrls.shift() : img))
   //       .filter(Boolean);
+
+  //     if (finalImages.length === 0) {
+  //       toast.error("❌ No product images provided");
+  //       setIsLoading(false);
+  //       return;
+  //     }
 
   //     const payload = {
   //       name,
@@ -111,103 +152,19 @@ const EditProduct = () => {
   //       }
   //     );
 
-  //     if (updateRes.data?.product) {
-  //       toast.success("Product updated successfully");
+  //     if (updateRes.data?.success) {
+  //       toast.success("✅ Product updated successfully");
   //       navigate("/seller");
   //     } else {
   //       toast.error(updateRes.data.message || "Update failed");
   //     }
   //   } catch (error) {
+  //     console.error("Update failed:", error);
   //     toast.error(error.response?.data?.message || "Something went wrong");
   //   } finally {
   //     setIsLoading(false);
   //   }
   // };
-  useEffect(() => {
-    // const fetchData = async () => {
-    //   try {
-    //     const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
-    //     const token = adminData.token;
-
-    //     if (!token) {
-    //       toast.error("❌ Admin token missing");
-    //       return;
-    //     }
-
-    //     const [categoryRes, productRes] = await Promise.all([
-    //       axios.get(`${BASE_URL}/api/categories/getCategories`, {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //       }),
-    //       axios.get(`${BASE_URL}/api/products/getProduct/${id}`, {
-    //         headers: { Authorization: `Bearer ${token}` },
-    //       }),
-    //     ]);
-
-    //     setCategories(categoryRes.data);
-
-    //     const product = productRes.data;
-    //     setName(product.name);
-    //     setDescription(product.description);
-    //     setCategory(product.category_id);
-    //     setPrice(product.price);
-    //     setStock_quantity(product.stock_quantity);
-
-    //     const paddedImages = [
-    //       ...product.images,
-    //       ...Array(4 - product.images.length).fill(null),
-    //     ];
-    //     setExistingImages(paddedImages);
-    //   } catch (err) {
-    //     toast.error(err.response?.data?.message || "Failed to fetch data");
-    //   }
-    // };
-
-    const fetchData = async () => {
-      try {
-        const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
-        if (!adminData?.token) {
-          toast.error("❌ Admin token missing. Please login again.");
-          return;
-        }
-        const token = adminData.token;
-
-        const [categoryRes, productRes] = await Promise.all([
-          axios.get(`${BASE_URL}/api/categories/getCategories`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${BASE_URL}/api/products/getProduct/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-
-        setCategories(categoryRes.data);
-
-        const product = productRes.data;
-        if (!product) {
-          toast.error("⚠️ Product not found.");
-          return;
-        }
-
-        setName(product.name || "");
-        setDescription(product.description || "");
-        setCategory(product.category_id || "");
-        setPrice(product.price || "");
-        setStock_quantity(product.stock_quantity || "");
-
-        const images = Array.isArray(product.images) ? product.images : [];
-        const paddedImages = [
-          ...images,
-          ...Array(4 - images.length).fill(null),
-        ];
-        setExistingImages(paddedImages);
-      } catch (err) {
-        console.error("FetchData Error:", err);
-        toast.error(err.response?.data?.message || "Failed to fetch data");
-      }
-    };
-
-    fetchData();
-  }, [id]);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -215,18 +172,23 @@ const EditProduct = () => {
 
     try {
       const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
-      const token = adminData.token;
+      const token = adminData?.token;
 
       if (!token) {
         toast.error("❌ Admin token missing");
-        setIsLoading(false);
+        return;
+      }
+
+      // Validate fields
+      if (!name || !price || !category) {
+        toast.error("❌ Please fill all required fields");
         return;
       }
 
       let uploadedImageUrls = [];
       const hasNewImages = file.some(Boolean);
 
-      // ✅ Upload only if new images are selected
+      // Upload new images if provided
       if (hasNewImages) {
         const imageFormData = new FormData();
         file.forEach((img) => {
@@ -244,24 +206,25 @@ const EditProduct = () => {
           }
         );
 
-        uploadedImageUrls = Array.isArray(uploadRes.data.url)
-          ? [...uploadRes.data.url]
-          : [uploadRes.data.url];
+        uploadedImageUrls = (
+          Array.isArray(uploadRes.data.url)
+            ? uploadRes.data.url
+            : [uploadRes.data.url]
+        ).filter(Boolean);
 
-        if (!uploadedImageUrls?.length) {
+        if (!uploadedImageUrls.length) {
           toast.error("❌ Image upload failed");
-          setIsLoading(false);
           return;
         }
       }
 
+      // Merge existing and new images
       const finalImages = existingImages
-        .map((img, index) => (file[index] ? uploadedImageUrls.shift() : img))
+        .map((oldImg, i) => (file[i] ? uploadedImageUrls.shift() : oldImg))
         .filter(Boolean);
 
-      if (finalImages.length === 0) {
+      if (!finalImages.length) {
         toast.error("❌ No product images provided");
-        setIsLoading(false);
         return;
       }
 
@@ -290,7 +253,7 @@ const EditProduct = () => {
         toast.success("✅ Product updated successfully");
         navigate("/seller");
       } else {
-        toast.error(updateRes.data.message || "Update failed");
+        toast.error(updateRes.data?.message || "Update failed");
       }
     } catch (error) {
       console.error("Update failed:", error);

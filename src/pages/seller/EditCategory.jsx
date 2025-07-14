@@ -25,12 +25,21 @@ const EditCategory = () => {
       }
 
       try {
+        setIsLoading(true); // Optional: show loading spinner
+
         const adminData = localStorage.getItem("admin");
         if (!adminData) {
           toast.error("No authentication token found. Please login again.");
           return;
         }
-        const admin = JSON.parse(adminData);
+
+        let admin;
+        try {
+          admin = JSON.parse(adminData);
+        } catch {
+          toast.error("Invalid admin session. Please login again.");
+          return;
+        }
 
         const { data } = await axios.get(
           `${BASE_URL}/api/categories/category/${id}`,
@@ -46,7 +55,9 @@ const EditCategory = () => {
           setName(data.name || "");
           setDescription(data.description || "");
           setStatus(data.is_active ? "active" : "inactive");
-          setPreviewImage(data.images?.[0] || "");
+
+          const firstImage = Array.isArray(data.images) ? data.images[0] : "";
+          setPreviewImage(firstImage);
         } else {
           toast.error("Category details not found.");
         }
@@ -55,6 +66,8 @@ const EditCategory = () => {
         toast.error(
           error.response?.data?.message || "Failed to fetch category details"
         );
+      } finally {
+        setIsLoading(false); // Optional: hide loading spinner
       }
     };
 
@@ -66,18 +79,16 @@ const EditCategory = () => {
     setIsLoading(true);
 
     try {
-      const userData = JSON.parse(localStorage.getItem("user"));
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
       const token = userData?.token;
 
       if (!token) {
         toast.error("Authentication token missing. Please login again.");
-        setIsLoading(false);
         return;
       }
 
       if (!id) {
         toast.error("Invalid category ID");
-        setIsLoading(false);
         return;
       }
 
@@ -102,17 +113,20 @@ const EditCategory = () => {
         const uploadedUrls = uploadRes.data.url;
         imageUrl = Array.isArray(uploadedUrls) ? uploadedUrls[0] : uploadedUrls;
 
-        if (!imageUrl) throw new Error("Image upload failed");
+        if (!imageUrl) {
+          toast.error("Image upload failed. Keeping existing image.");
+          imageUrl = previewImage || null;
+        }
       }
 
       // Update category
-      await axios.put(
+      const res = await axios.put(
         `${BASE_URL}/api/categories/categoryupdate/${id}`,
         {
           name,
           description,
           images: imageUrl ? [imageUrl] : [],
-          is_active: status.toLowerCase() === "active",
+          is_active: (status || "").toLowerCase() === "active",
         },
         {
           headers: {
@@ -122,8 +136,12 @@ const EditCategory = () => {
         }
       );
 
-      toast.success("Category updated successfully");
-      navigate("/seller/category-list", { replace: true });
+      if (res.data?.success) {
+        toast.success("✅ Category updated successfully");
+        navigate("/seller/category-list", { replace: true });
+      } else {
+        toast.error(res.data?.message || "Update failed");
+      }
     } catch (error) {
       console.error("Update Error:", error);
       toast.error(error.response?.data?.message || "Update failed");
