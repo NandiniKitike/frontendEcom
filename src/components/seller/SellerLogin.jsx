@@ -277,7 +277,7 @@ const SellerLogin = () => {
         if (isLogin) {
           // ✅ Store admin token and role
           localStorage.setItem(
-            "user",
+            "admin",
             JSON.stringify({
               token: data.token,
               role: "admin",
