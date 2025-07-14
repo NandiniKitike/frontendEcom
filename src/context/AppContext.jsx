@@ -63,10 +63,17 @@ export const AppContextProvider = ({ children }) => {
   //   }
   // };
   const fetchCart = async () => {
-    const token = localStorage.getItem("user");
+    const userData = localStorage.getItem("user");
+
+    if (!userData) {
+      setUser(null);
+      return;
+    }
+
+    const user = JSON.parse(userData);
     try {
       const res = await axios.get(`${BASE_URL}/api/cart/getcart`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${user.token}` },
       });
 
       if (res.data.success && res.data.cart.length > 0) {
