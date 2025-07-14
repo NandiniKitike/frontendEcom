@@ -226,6 +226,36 @@ const SellerLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // const onSubmitHandler = async (e) => {
+  //   e.preventDefault();
+
+  //   const url = isLogin
+  //     ? `${BASE_URL}/api/auth/admin/login`
+  //     : `${BASE_URL}/api/auth/admin/register`;
+
+  //   const payload = isLogin ? { email, password } : { name, email, password };
+
+  //   try {
+  //     const response = await axios.post(url, payload);
+  //     const data = response.data;
+  //     console.log(data, "-===============================");
+  //     if (data.success === true && data.token) {
+  //       toast.success(isLogin ? "Login successful" : "Registration successful");
+
+  //       if (isLogin) {
+  //         localStorage.setItem("bearerToken", data.token);
+  //         setIsSeller(true); // Update context and localStorage
+  //         navigate("/seller");
+  //       } else {
+  //         setIsLogin(true); // Switch to login after successful registration
+  //       }
+  //     } else {
+  //       toast.error(data.message || "Something went wrong");
+  //     }
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message || error.message);
+  //   }
+  // };
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
@@ -238,16 +268,27 @@ const SellerLogin = () => {
     try {
       const response = await axios.post(url, payload);
       const data = response.data;
-      console.log(data, "-===============================");
-      if (data.success === true && data.token) {
-        toast.success(isLogin ? "Login successful" : "Registration successful");
+
+      console.log(data, "=== Admin Auth Response ===");
+
+      if (data.success && data.token) {
+        toast.success(isLogin ? "Admin login successful" : "Admin registered");
 
         if (isLogin) {
-          localStorage.setItem("bearerToken", data.token);
-          setIsSeller(true); // Update context and localStorage
-          navigate("/seller");
+          // ✅ Store admin token and role
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              token: data.token,
+              role: "admin",
+              user: data.user, // optional
+            })
+          );
+
+          setIsSeller(true);
+          navigate("/seller", { replace: true });
         } else {
-          setIsLogin(true); // Switch to login after successful registration
+          setIsLogin(true); // Switch to login page
         }
       } else {
         toast.error(data.message || "Something went wrong");
@@ -256,7 +297,6 @@ const SellerLogin = () => {
       toast.error(error?.response?.data?.message || error.message);
     }
   };
-
   useEffect(() => {
     console.log("Seller status changed:", isSeller);
     if (isSeller) {

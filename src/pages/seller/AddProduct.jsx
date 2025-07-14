@@ -1,122 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import { assets } from "../../assets/assets";
-// import axios from "axios";
-// import toast from "react-hot-toast";
-// import { useNavigate } from "react-router-dom";
-// const AddProduct = () => {
-//   const [file, setFile] = useState([null, null, null, null]);
-//   const [name, setName] = useState("");
-//   const [description, setDescription] = useState("");
-//   const [categories, setCategories] = useState([]); // ✅ fix
-//   const [category, setCategory] = useState(""); // ✅ added
-//   const [price, setPrice] = useState("");
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [stock_quantity, setstock_quantity] = useState("");
-
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchCategories = async () => {
-//       try {
-//         const token = localStorage.getItem("bearerToken");
-
-//         console.log("Token being sent from frontend:", token);
-//         const { data } = await axios.get(
-//           "http://localhost:5000/api/categories/getCategories",
-//           {
-//             headers: {
-//               // <---- FIXED HERE
-//               Authorization: `Bearer ${token}`,
-//               "Content-Type": "application/json",
-//             },
-//           }
-//         );
-
-//         console.log("categories", data);
-//         setCategories(data);
-//       } catch (err) {
-//         toast.error(err.response?.data?.message || "Something went wrong");
-//       }
-//     };
-
-//     fetchCategories();
-//   }, []);
-
-//   const onSubmitHandler = async (event) => {
-//     event.preventDefault();
-//     setIsLoading(true);
-
-//     try {
-//       const token = localStorage.getItem("bearerToken");
-//       if (!token) {
-//         toast.error("No authentication token found. Please login again.");
-//         setIsLoading(true);
-//         return;
-//       }
-
-//       const imageFormData = new FormData();
-//       file.forEach((img) => {
-//         if (img) imageFormData.append("files", img);
-//       });
-
-//       const uploadRes = await axios.post(
-//         "http://localhost:5000/api/Products/upload-image",
-//         imageFormData,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             "Content-Type": "multipart/form-data",
-//           },
-//         }
-//       );
-
-//       const uploadedImageUrls = uploadRes.data.url;
-
-//       if (!uploadedImageUrls || uploadedImageUrls.length === 0) {
-//         toast.error("Image upload failed.");
-//         return;
-//       }
-
-//       const createProductPayload = {
-//         name,
-//         description,
-//         price,
-//         stock_quantity,
-//         is_active: true,
-//         category_id: category,
-//         images: uploadedImageUrls,
-//       };
-
-//       const createRes = await axios.post(
-//         "http://localhost:5000/api/Products/createProduct",
-//         createProductPayload,
-//         {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             "Content-Type": "application/json",
-//           },
-//         }
-//       );
-
-//       const data = createRes.data;
-
-//       if (data.success) {
-//         toast.success("Product created successfully");
-//         navigate("/seller");
-//         setName("");
-//         setDescription("");
-//         setCategory("");
-//         setPrice("");
-//         setstock_quantity("");
-//         setFile([null, null, null, null]);
-//       } else {
-//         toast.error(data.message);
-//       }
-//     } catch (error) {
-//       toast.error(error.response?.data?.message || error.message);
-//     }
-//     setIsLoading(false);
-//   };
 import React, { useState, useEffect } from "react";
 import { assets } from "../../assets/assets";
 import axios from "axios";
@@ -138,13 +19,14 @@ const AddProduct = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
+      const adminData = localStorage.getItem("admin");
+      const admin = JSON.parse(adminData);
       try {
-        const token = localStorage.getItem("bearerToken");
         const { data } = await axios.get(
           `${BASE_URL}/api/categories/getCategories`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${admin.token}`,
               "Content-Type": "application/json",
             },
           }
@@ -202,13 +84,14 @@ const AddProduct = () => {
         category_id: category,
         images: uploadedImageUrls,
       };
-
+      const adminData = localStorage.getItem("admin");
+      const admin = JSON.parse(adminData);
       const createRes = await axios.post(
         `${BASE_URL}/api/Products/createProduct`,
         createProductPayload,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${admin.token}`,
             "Content-Type": "application/json",
           },
         }

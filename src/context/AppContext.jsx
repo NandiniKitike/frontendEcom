@@ -145,11 +145,19 @@ export const AppContextProvider = ({ children }) => {
 
   const fetchAdmin = async () => {
     try {
-      const token = localStorage.getItem("bearerToken");
+      // Get user data from localStorage
+      const userData = localStorage.getItem("user");
+
+      if (!userData) {
+        setUser(null);
+        return;
+      }
+
+      const user = JSON.parse(userData);
 
       const res = await axios.get(`${BASE_URL}/api/auth/Admin/me`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       });
 
