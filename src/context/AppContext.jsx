@@ -196,7 +196,7 @@ export const AppContextProvider = ({ children }) => {
         return;
       }
 
-      console.log("Token being sent:", token); // Debug log
+      console.log("Token being sent:", token);
 
       const res = await axios.post(
         `${BASE_URL}/api/cart/add`,
@@ -211,6 +211,7 @@ export const AppContextProvider = ({ children }) => {
       );
 
       console.log("Cart API response:", res.data);
+      toast.success("Item added to cart successfully!");
       return res.data;
     } catch (error) {
       console.error("Add to cart error:", error);
