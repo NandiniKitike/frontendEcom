@@ -41,25 +41,41 @@ export const AppContextProvider = ({ children }) => {
     if (savedAdmin) setIsSellerState(JSON.parse(savedAdmin));
   }, []);
 
+  // const fetchCart = async () => {
+  //   try {
+  //     const res = await axios.get(`${BASE_URL}/api/cart/getcart`);
+  //     const cart = res.data.cart;
+  //     const items = cart?.[0]?.items || [];
+
+  //     console.log("Fetched cart items:", items);
+
+  //     setCartItems(items);
+
+  //     const totalCount = items.reduce(
+  //       (total, item) => total + item.quantity,
+  //       0
+  //     );
+  //     setCount(totalCount);
+  //   } catch (err) {
+  //     console.error("Failed to fetch cart:", err);
+  //     setCartItems([]);
+  //     setCount(0);
+  //   }
+  // };
   const fetchCart = async () => {
+    const token = localStorage.getItem("bearerToken");
     try {
-      const res = await axios.get(`${BASE_URL}/api/cart/getcart`);
-      const cart = res.data.cart;
-      const items = cart?.[0]?.items || [];
+      const res = await axios.get(`${BASE_URL}/api/cart/getcart`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      console.log("Fetched cart items:", items);
-
-      setCartItems(items);
-
-      const totalCount = items.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
-      setCount(totalCount);
-    } catch (err) {
-      console.error("Failed to fetch cart:", err);
-      setCartItems([]);
-      setCount(0);
+      if (res.data.success && res.data.cart.length > 0) {
+        setCartItems(res.data.cart[0].items); // ✅ Reactive update
+      } else {
+        setCartItems([]); // ✅ Clear if cart empty
+      }
+    } catch (error) {
+      console.error("Error fetching cart:", error);
     }
   };
 
