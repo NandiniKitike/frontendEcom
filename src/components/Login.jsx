@@ -4,7 +4,7 @@ import { useAppContext } from "../context/AppContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { BASE_URL, setCookie } from "../../constant";
+import { BASE_URL } from "../../constant";
 
 // ✅ Use baseURL from axios config
 
@@ -31,10 +31,8 @@ const Login = () => {
         if (data.success) {
           console.log("success");
 
-          setCookie("token", data.user?.token, 7);
-          console.log("toke set", data.user?.token);
           localStorage.setItem("user", JSON.stringify(data.user));
-          console.log("checkeg role", data.user.role);
+
           if (data.user.role === "admin") {
             localStorage.setItem("admin", JSON.stringify(true));
           }

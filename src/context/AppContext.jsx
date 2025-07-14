@@ -36,7 +36,6 @@ export const AppContextProvider = ({ children }) => {
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    console.log("saved user", savedUser);
     const savedAdmin = localStorage.getItem("admin");
     if (savedUser) setUser(JSON.parse(savedUser));
     if (savedAdmin) setIsSellerState(JSON.parse(savedAdmin));
@@ -83,11 +82,40 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
+  // const fetchUser = async () => {
+  //   try {
+  //     const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
+  //       credentials: "include",
+  //     });
+  //     setUser(res.data.user);
+  //   } catch (err) {
+  //     console.error("Not logged in or invalid token", err.message);
+  //     setUser(null);
+  //   } finally {
+  //     setLoadingUser(false);
+  //   }
+  // };
+
+  //a:
   const fetchUser = async () => {
     try {
+      // Get user data from localStorage
+      const userData = localStorage.getItem("user");
+
+      if (!userData) {
+        setUser(null);
+        return;
+      }
+
+      const user = JSON.parse(userData);
+
+      // Make API call with Bearer token in header
       const res = await axios.get(`${BASE_URL}/api/auth/auth/me`, {
-        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       });
+
       setUser(res.data.user);
     } catch (err) {
       console.error("Not logged in or invalid token", err.message);
