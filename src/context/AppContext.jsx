@@ -84,15 +84,14 @@ export const AppContextProvider = ({ children }) => {
 
         setCartItems(items);
 
-        // ✅ Calculate total item count
         const totalCount = items.reduce(
           (total, item) => total + (item.quantity || 0),
           0
         );
         setCount(totalCount);
       } else {
-        setCartItems([]); // cart empty
-        setCount(0); // count empty
+        setCartItems([]);
+        setCount(0);
       }
     } catch (error) {
       console.error("Error fetching cart:", error);

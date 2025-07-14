@@ -45,11 +45,9 @@ const Cart = () => {
   const fetchAddresses = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("bearerToken");
+      const user = localStorage.getItem("user");
       const res = await axios.get(`${BASE_URL}/api/Address/getAddress`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${user.token}` },
       });
 
       if (res.data && Array.isArray(res.data)) {
@@ -107,7 +105,7 @@ const Cart = () => {
     if (!selectedAddress || cartItems.length === 0) return;
 
     try {
-      const token = localStorage.getItem("bearerToken");
+      const user = localStorage.getItem("user");
 
       const orderPayload = {
         address_id: selectedAddress._id,
@@ -122,9 +120,7 @@ const Cart = () => {
         `${BASE_URL}/api/orders`,
         orderPayload,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${user.token}` },
         }
       );
 
@@ -132,9 +128,7 @@ const Cart = () => {
         alert("Order placed successfully!");
 
         await axios.delete(`${BASE_URL}/api/cart/clear`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${user.token}` },
         });
 
         setCartItems([]);
