@@ -19,27 +19,63 @@ const ProductList = () => {
   const onSubmitHandler = async () => {
     navigate("/seller/product-add");
   };
-  const handleEdit = async (id) => {
+  // const handleEdit = async (id) => {
+  //   navigate("/seller/edit-product/" + id);
+  // };
+  // const handleDelete = async (id) => {
+  //   const confirmDelete = window.confirm("Are you sure you want to delete");
+  //   if (confirmDelete) {
+  //     try {
+  //       const token = localStorage.getItem("bearerToken");
+  //       await axios.delete(`${BASE_URL}/api/Products/delProduct/` + id, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+
+  //       setProduct((prevProducts) => prevProducts.filter((p) => p._id !== id));
+  //       toast.success("Product deleted successfully");
+  //     } catch (error) {
+  //       toast.error(
+  //         error.response?.data?.message || "Failed to delete product"
+  //       );
+  //     }
+  //   }
+  // };
+  const handleEdit = (id) => {
     navigate("/seller/edit-product/" + id);
   };
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete");
-    if (confirmDelete) {
-      try {
-        const token = localStorage.getItem("bearerToken");
-        await axios.delete(`${BASE_URL}/api/Products/delProduct/` + id, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
 
-        setProduct((prevProducts) => prevProducts.filter((p) => p._id !== id));
-        toast.success("Product deleted successfully");
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to delete product"
-        );
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+      const token = adminData?.token;
+
+      if (!token) {
+        toast.error("❌ Admin token missing. Please login again.");
+        return;
       }
+
+      await axios.delete(`${BASE_URL}/api/products/delProduct/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Remove deleted product from state
+      setProduct((prev) => prev.filter((p) => p._id !== id));
+
+      toast.success("✅ Product deleted successfully");
+    } catch (error) {
+      console.error("Delete Error:", error);
+      toast.error(
+        error.response?.data?.message || "❌ Failed to delete product"
+      );
     }
   };
+
   const toggleStock = async (id) => {
     try {
       const { data } = await axios.put(

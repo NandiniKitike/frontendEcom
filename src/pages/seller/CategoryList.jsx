@@ -9,18 +9,52 @@ const CategoryList = () => {
   const navigate = useNavigate();
   const [category, setCategory] = useState([]);
 
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const token = localStorage.getItem("bearerToken");
+  //       const { data } = await axios.get(
+  //         `${BASE_URL}/api/categories/getCategories`,
+  //         {
+  //           headers: { Authorization: `Bearer ${token}` },
+  //         }
+  //       );
+  //       setCategory(data); // assuming data is the array
+  //     } catch (err) {
+  //       toast.error(err.response?.data?.message || "Something went wrong");
+  //     }
+  //   };
+
+  //   fetchCategories();
+  // }, []);
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const token = localStorage.getItem("bearerToken");
+        const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+        const token = adminData?.token;
+
+        if (!token) {
+          toast.error("❌ Admin token missing. Please login again.");
+          return;
+        }
+
         const { data } = await axios.get(
           `${BASE_URL}/api/categories/getCategories`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
           }
         );
-        setCategory(data); // assuming data is the array
+
+        if (Array.isArray(data)) {
+          setCategory(data); // ✅ Only set if data is array
+        } else {
+          toast.error("⚠️ Invalid category data received");
+        }
       } catch (err) {
+        console.error("Fetch Categories Error:", err);
         toast.error(err.response?.data?.message || "Something went wrong");
       }
     };
@@ -32,21 +66,53 @@ const CategoryList = () => {
     navigate("/seller/category-add");
   };
 
+  // const handleDelete = async (id) => {
+  //   const confirmDelete = window.confirm("Are you sure you want to delete?");
+  //   if (confirmDelete) {
+  //     try {
+  //       const token = localStorage.getItem("bearerToken");
+  //       await axios.delete(`${BASE_URL}/api/categories/delCategory/${id}`, {
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       });
+  //       setCategory((prev) => prev.filter((p) => p._id !== id));
+  //       toast.success("Category deleted successfully");
+  //     } catch (error) {
+  //       toast.error(
+  //         error.response?.data?.message || "Failed to delete category"
+  //       );
+  //     }
+  //   }
+  // };
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete?");
-    if (confirmDelete) {
-      try {
-        const token = localStorage.getItem("bearerToken");
-        await axios.delete(`${BASE_URL}/api/categories/delCategory/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCategory((prev) => prev.filter((p) => p._id !== id));
-        toast.success("Category deleted successfully");
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message || "Failed to delete category"
-        );
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+      const token = adminData?.token;
+
+      if (!token) {
+        toast.error("❌ Admin token missing. Please login again.");
+        return;
       }
+
+      await axios.delete(`${BASE_URL}/api/categories/delCategory/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setCategory((prev) =>
+        Array.isArray(prev) ? prev.filter((p) => p._id !== id) : []
+      );
+
+      toast.success("✅ Category deleted successfully");
+    } catch (error) {
+      console.error("Delete Error:", error);
+      toast.error(
+        error.response?.data?.message || "❌ Failed to delete category"
+      );
     }
   };
 

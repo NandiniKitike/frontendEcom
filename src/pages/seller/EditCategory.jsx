@@ -25,19 +25,23 @@ const EditCategory = () => {
       }
 
       try {
-        setIsLoading(true); // Optional: show loading spinner
+        setIsLoading(true); // Show spinner
 
         const adminData = localStorage.getItem("admin");
         if (!adminData) {
-          toast.error("No authentication token found. Please login again.");
+          toast.error("❌ Admin not logged in. Please login again.");
           return;
         }
 
         let admin;
         try {
           admin = JSON.parse(adminData);
+          if (!admin?.token) {
+            toast.error("❌ Missing token. Please login again.");
+            return;
+          }
         } catch {
-          toast.error("Invalid admin session. Please login again.");
+          toast.error("❌ Corrupted session. Please login again.");
           return;
         }
 
@@ -59,7 +63,7 @@ const EditCategory = () => {
           const firstImage = Array.isArray(data.images) ? data.images[0] : "";
           setPreviewImage(firstImage);
         } else {
-          toast.error("Category details not found.");
+          toast.error("⚠️ Category details not found.");
         }
       } catch (error) {
         console.error("Fetch Category Error:", error.response || error);
@@ -67,7 +71,7 @@ const EditCategory = () => {
           error.response?.data?.message || "Failed to fetch category details"
         );
       } finally {
-        setIsLoading(false); // Optional: hide loading spinner
+        setIsLoading(false); // Hide spinner
       }
     };
 

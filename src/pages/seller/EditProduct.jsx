@@ -166,6 +166,102 @@ const EditProduct = () => {
   //   }
   // };
 
+  // const onSubmitHandler = async (e) => {
+  //   e.preventDefault();
+  //   setIsLoading(true);
+
+  //   try {
+  //     const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+  //     const token = adminData?.token;
+
+  //     if (!token) {
+  //       toast.error("❌ Admin token missing");
+  //       return;
+  //     }
+
+  //     // Validate fields
+  //     if (!name || !price || !category) {
+  //       toast.error("❌ Please fill all required fields");
+  //       return;
+  //     }
+
+  //     let uploadedImageUrls = [];
+  //     const hasNewImages = file.some(Boolean);
+
+  //     // Upload new images if provided
+  //     if (hasNewImages) {
+  //       const imageFormData = new FormData();
+  //       file.forEach((img) => {
+  //         if (img) imageFormData.append("files", img);
+  //       });
+
+  //       const uploadRes = await axios.post(
+  //         `${BASE_URL}/api/Products/upload-image`,
+  //         imageFormData,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //       );
+
+  //       uploadedImageUrls = (
+  //         Array.isArray(uploadRes.data.url)
+  //           ? uploadRes.data.url
+  //           : [uploadRes.data.url]
+  //       ).filter(Boolean);
+
+  //       if (!uploadedImageUrls.length) {
+  //         toast.error("❌ Image upload failed");
+  //         return;
+  //       }
+  //     }
+
+  //     // Merge existing and new images
+  //     const finalImages = existingImages
+  //       .map((oldImg, i) => (file[i] ? uploadedImageUrls.shift() : oldImg))
+  //       .filter(Boolean);
+
+  //     if (!finalImages.length) {
+  //       toast.error("❌ No product images provided");
+  //       return;
+  //     }
+
+  //     const payload = {
+  //       name,
+  //       description,
+  //       price,
+  //       stock_quantity,
+  //       is_active: true,
+  //       category_id: category,
+  //       images: finalImages,
+  //     };
+
+  //     const updateRes = await axios.put(
+  //       `${BASE_URL}/api/Products/updateProduct/${id}`,
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (updateRes.data?.success) {
+  //       toast.success("✅ Product updated successfully");
+  //       navigate("/seller");
+  //     } else {
+  //       toast.error(updateRes.data?.message || "Update failed");
+  //     }
+  //   } catch (error) {
+  //     console.error("Update failed:", error);
+  //     toast.error(error.response?.data?.message || "Something went wrong");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -176,17 +272,19 @@ const EditProduct = () => {
 
       if (!token) {
         toast.error("❌ Admin token missing");
+        setIsLoading(false);
         return;
       }
 
       // Validate fields
       if (!name || !price || !category) {
         toast.error("❌ Please fill all required fields");
+        setIsLoading(false);
         return;
       }
 
       let uploadedImageUrls = [];
-      const hasNewImages = file.some(Boolean);
+      const hasNewImages = file.some((img) => img !== null);
 
       // Upload new images if provided
       if (hasNewImages) {
@@ -196,7 +294,7 @@ const EditProduct = () => {
         });
 
         const uploadRes = await axios.post(
-          `${BASE_URL}/api/Products/upload-image`,
+          `${BASE_URL}/api/products/upload-image`,
           imageFormData,
           {
             headers: {
@@ -214,17 +312,21 @@ const EditProduct = () => {
 
         if (!uploadedImageUrls.length) {
           toast.error("❌ Image upload failed");
+          setIsLoading(false);
           return;
         }
       }
 
       // Merge existing and new images
       const finalImages = existingImages
-        .map((oldImg, i) => (file[i] ? uploadedImageUrls.shift() : oldImg))
+        .map((oldImg, i) => {
+          return file[i] ? uploadedImageUrls[i] : oldImg;
+        })
         .filter(Boolean);
 
       if (!finalImages.length) {
         toast.error("❌ No product images provided");
+        setIsLoading(false);
         return;
       }
 
@@ -239,7 +341,7 @@ const EditProduct = () => {
       };
 
       const updateRes = await axios.put(
-        `${BASE_URL}/api/Products/updateProduct/${id}`,
+        `${BASE_URL}/api/products/updateProduct/${id}`,
         payload,
         {
           headers: {
