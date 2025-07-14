@@ -45,7 +45,14 @@ const Cart = () => {
   const fetchAddresses = async () => {
     try {
       setLoading(true);
-      const user = localStorage.getItem("user");
+      const userData = localStorage.getItem("user");
+      if (!userData) {
+        alert("❌ User not logged in");
+        return;
+      }
+
+      const user = JSON.parse(userData);
+
       const res = await axios.get(`${BASE_URL}/api/Address/getAddress`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
