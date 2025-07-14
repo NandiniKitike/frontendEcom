@@ -20,7 +20,7 @@ const EditCategory = () => {
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const token = localStorage.getItem("bearerToken");
+        const token = localStorage.getItem("user");
         const { data } = await axios.get(
           `${BASE_URL}/api/categories/category/${id}`,
           {
@@ -45,7 +45,7 @@ const EditCategory = () => {
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("bearerToken");
+      const token = localStorage.getItem("user");
       if (!token) {
         toast.error("Authentication token missing");
         return;
