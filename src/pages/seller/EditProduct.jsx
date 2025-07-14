@@ -27,7 +27,7 @@ const EditProduct = () => {
   useEffect(() => {
     const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
     if (!adminData?.token) {
-      toast.error("❌ Admin token missing. Please login again.");
+      toast.error(" Admin token missing. Please login again.");
       navigate("/login"); // redirect to login
       return;
     }
@@ -92,13 +92,13 @@ const EditProduct = () => {
       const token = adminData?.token;
 
       if (!token) {
-        toast.error("❌ Admin token missing");
+        toast.error("Admin token missing");
         setIsLoading(false);
         return;
       }
 
       if (!name || !price || !category) {
-        toast.error("❌ Please fill all required fields");
+        toast.error(" Please fill all required fields");
         setIsLoading(false);
         return;
       }
@@ -131,7 +131,7 @@ const EditProduct = () => {
         ).filter(Boolean);
 
         if (!uploadedImageUrls.length) {
-          toast.error("❌ Image upload failed. Keeping existing images.");
+          toast.error(" Image upload failed. Keeping existing images.");
         }
       }
 
@@ -141,7 +141,7 @@ const EditProduct = () => {
         .filter(Boolean);
 
       if (!finalImages.length) {
-        toast.error("❌ No product images provided");
+        toast.error(" No product images provided");
         setIsLoading(false);
         return;
       }
@@ -171,14 +171,14 @@ const EditProduct = () => {
 
       // ✅ Reliable success check
       if (updateRes.data?.success || updateRes.status === 200) {
-        toast.success("✅ Product updated successfully");
+        toast.success(" Product updated successfully");
         navigate("/seller", { replace: true });
       } else {
-        toast.error(updateRes.data?.message || "❌ Update failed");
+        toast.error(updateRes.data?.message || " Update failed");
       }
     } catch (error) {
       console.error("Update failed:", error);
-      toast.error(error.response?.data?.message || "❌ Something went wrong");
+      toast.error(error.response?.data?.message || " Something went wrong");
     } finally {
       setIsLoading(false);
     }

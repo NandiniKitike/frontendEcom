@@ -29,7 +29,7 @@ const EditCategory = () => {
 
         const adminData = localStorage.getItem("admin");
         if (!adminData) {
-          toast.error("❌ Admin not logged in. Please login again.");
+          toast.error(" Admin not logged in. Please login again.");
           return;
         }
 
@@ -37,11 +37,11 @@ const EditCategory = () => {
         try {
           admin = JSON.parse(adminData);
           if (!admin?.token) {
-            toast.error("❌ Missing admin token. Please login again.");
+            toast.error(" Missing admin token. Please login again.");
             return;
           }
         } catch {
-          toast.error("❌ Corrupted session. Please login again.");
+          toast.error(" Corrupted session. Please login again.");
           return;
         }
 
@@ -83,17 +83,18 @@ const EditCategory = () => {
     setIsLoading(true);
 
     try {
-      const userData = JSON.parse(localStorage.getItem("user") || "{}");
-      const token = userData?.token;
+      const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+      const token = adminData?.token;
 
       if (!token) {
-        toast.error("❌ Authentication token missing. Please login again.");
+        toast.error(" Admin token missing. Please login again.");
         setIsLoading(false);
+        navigate("/login");
         return;
       }
 
       if (!id) {
-        toast.error("❌ Invalid category ID");
+        toast.error(" Invalid category ID");
         setIsLoading(false);
         return;
       }
@@ -120,7 +121,7 @@ const EditCategory = () => {
         imageUrl = Array.isArray(uploadedUrls) ? uploadedUrls[0] : uploadedUrls;
 
         if (!imageUrl) {
-          toast.error("❌ Image upload failed. Keeping existing image.");
+          toast.error(" Image upload failed. Keeping existing image.");
           imageUrl = previewImage || null;
         }
       }
@@ -144,12 +145,11 @@ const EditCategory = () => {
 
       console.log("Update Response:", res.data); // 🪵 Debug API response
 
-      // ✅ Check API success
-      if (res.data?.success || res.data?.status || res.status === 200) {
-        toast.success("✅ Category updated successfully");
+      if (res.data?.success || res.status === 200) {
+        toast.success(" Category updated successfully");
         navigate("/seller/category-list", { replace: true });
       } else {
-        toast.error(res.data?.message || "❌ Update failed");
+        toast.error(res.data?.message || " Update failed");
       }
     } catch (error) {
       console.error("Update Error:", error);
