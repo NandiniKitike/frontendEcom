@@ -39,6 +39,16 @@ const AddAdress = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
+    // Get user token from localStorage
+    const userData = localStorage.getItem("user");
+
+    if (!userData) {
+      alert("❌ User not logged in");
+      return;
+    }
+
+    const user = JSON.parse(userData);
+
     try {
       const res = await axios.post(
         `${BASE_URL}/api/Address/createAdr`,
@@ -52,9 +62,9 @@ const AddAdress = () => {
           is_default: true,
         },
         {
-          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`, // ✅ Add token here
           },
         }
       );
@@ -70,7 +80,7 @@ const AddAdress = () => {
         console.error(data);
       }
     } catch (err) {
-      console.error("❌ Error:", err);
+      console.error("❌ Error creating address:", err);
       alert("Something went wrong");
     }
   };

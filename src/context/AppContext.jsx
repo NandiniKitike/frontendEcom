@@ -334,11 +334,6 @@ export const AppContextProvider = ({ children }) => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchProducts();
-  //   fetchUser();
-  //   fetchCart();
-  // }, []);
   useEffect(() => {
     fetchProducts();
     fetchUser();
