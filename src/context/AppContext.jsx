@@ -315,10 +315,11 @@ export const AppContextProvider = ({ children }) => {
   const handleDelete = async (id) => {
     try {
       const user = localStorage.getItem("user");
+      const userone = JSON.parse(user);
 
       const res = await axios.delete(`${BASE_URL}/api/cart/remove/${id}`, {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${userone.token}`,
         },
       });
 
