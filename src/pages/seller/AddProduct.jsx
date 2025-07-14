@@ -40,14 +40,97 @@ const AddProduct = () => {
     fetchCategories();
   }, []);
 
+  // const onSubmitHandler = async (event) => {
+  //   event.preventDefault();
+  //   setIsLoading(true);
+
+  //   try {
+  //     const token = localStorage.getItem("admin");
+  //     if (!token) {
+  //       toast.error("No authentication token found. Please login again.");
+  //       setIsLoading(false);
+  //       return;
+  //     }
+
+  //     const imageFormData = new FormData();
+  //     file.forEach((img) => {
+  //       if (img) imageFormData.append("files", img);
+  //     });
+
+  //     const uploadRes = await axios.post(
+  //       `${BASE_URL}/api/Products/upload-image`,
+  //       imageFormData,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${admin.token}`,
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     const uploadedImageUrls = uploadRes.data.url;
+
+  //     if (!uploadedImageUrls || uploadedImageUrls.length === 0) {
+  //       toast.error("Image upload failed.");
+  //       return;
+  //     }
+
+  //     const createProductPayload = {
+  //       name,
+  //       description,
+  //       price,
+  //       stock_quantity,
+  //       is_active: true,
+  //       category_id: category,
+  //       images: uploadedImageUrls,
+  //     };
+  //     const adminData = localStorage.getItem("admin");
+  //     const admin = JSON.parse(adminData);
+  //     const createRes = await axios.post(
+  //       `${BASE_URL}/api/Products/createProduct`,
+  //       createProductPayload,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${admin.token}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     const data = createRes.data;
+
+  //     if (data.success) {
+  //       toast.success("Product created successfully");
+  //       navigate("/seller");
+  //       setName("");
+  //       setDescription("");
+  //       setCategory("");
+  //       setPrice("");
+  //       setstock_quantity("");
+  //       setFile([null, null, null, null]);
+  //     } else {
+  //       toast.error(data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error.response?.data?.message || error.message);
+  //   }
+  //   setIsLoading(false);
+  // };
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     setIsLoading(true);
 
     try {
-      const token = localStorage.getItem("bearerToken");
-      if (!token) {
+      const adminData = localStorage.getItem("admin");
+      if (!adminData) {
         toast.error("No authentication token found. Please login again.");
+        setIsLoading(false);
+        return;
+      }
+      const admin = JSON.parse(adminData);
+
+      if (!file || file.length === 0) {
+        toast.error("Please select at least one image.");
         setIsLoading(false);
         return;
       }
@@ -62,16 +145,19 @@ const AddProduct = () => {
         imageFormData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${admin.token}`,
             "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      const uploadedImageUrls = uploadRes.data.url;
+      const uploadedImageUrls = Array.isArray(uploadRes.data.url)
+        ? uploadRes.data.url
+        : [uploadRes.data.url];
 
       if (!uploadedImageUrls || uploadedImageUrls.length === 0) {
         toast.error("Image upload failed.");
+        setIsLoading(false);
         return;
       }
 
@@ -84,8 +170,7 @@ const AddProduct = () => {
         category_id: category,
         images: uploadedImageUrls,
       };
-      const adminData = localStorage.getItem("admin");
-      const admin = JSON.parse(adminData);
+
       const createRes = await axios.post(
         `${BASE_URL}/api/Products/createProduct`,
         createProductPayload,
@@ -106,16 +191,18 @@ const AddProduct = () => {
         setDescription("");
         setCategory("");
         setPrice("");
-        setstock_quantity("");
+
         setFile([null, null, null, null]);
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Product creation failed.");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
+
   return (
     <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
       <form
