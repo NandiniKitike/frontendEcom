@@ -275,20 +275,19 @@ const SellerLogin = () => {
         toast.success(isLogin ? "Admin login successful" : "Admin registered");
 
         if (isLogin) {
-          // ✅ Store admin token and role
           localStorage.setItem(
             "admin",
             JSON.stringify({
               token: data.token,
               role: "admin",
-              user: data.user, // optional
+              user: data.user,
             })
           );
 
           setIsSeller(true);
           navigate("/seller", { replace: true });
         } else {
-          setIsLogin(true); // Switch to login page
+          setIsLogin(true);
         }
       } else {
         toast.error(data.message || "Something went wrong");
