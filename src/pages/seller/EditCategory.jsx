@@ -37,7 +37,7 @@ const EditCategory = () => {
         try {
           admin = JSON.parse(adminData);
           if (!admin?.token) {
-            toast.error("❌ Missing token. Please login again.");
+            toast.error("❌ Missing admin token. Please login again.");
             return;
           }
         } catch {
@@ -83,16 +83,18 @@ const EditCategory = () => {
     setIsLoading(true);
 
     try {
-      const userData = JSON.parse(localStorage.getItem("user") || "{}");
-      const token = userData?.token;
+      const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
+      const token = adminData?.token;
 
       if (!token) {
-        toast.error("Authentication token missing. Please login again.");
+        toast.error("❌ Admin token missing. Please login again.");
+        setIsLoading(false);
         return;
       }
 
       if (!id) {
         toast.error("Invalid category ID");
+        setIsLoading(false);
         return;
       }
 
@@ -130,7 +132,7 @@ const EditCategory = () => {
           name,
           description,
           images: imageUrl ? [imageUrl] : [],
-          is_active: (status || "").toLowerCase() === "active",
+          is_active: status === "active",
         },
         {
           headers: {
@@ -224,15 +226,16 @@ const EditCategory = () => {
           <label htmlFor="category-status" className="text-base font-medium">
             Category Status
           </label>
-          <input
-            type="text"
+          <select
             id="category-status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            placeholder="active / inactive"
-            required
             className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
-          />
+          >
+            <option value="">Select Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
         </div>
 
         {/* Submit */}

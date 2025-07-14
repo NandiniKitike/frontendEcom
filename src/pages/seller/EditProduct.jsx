@@ -28,10 +28,17 @@ const EditProduct = () => {
     const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
     if (!adminData?.token) {
       toast.error("❌ Admin token missing. Please login again.");
+      navigate("/login"); // redirect to login
       return;
     }
 
     const fetchData = async (token) => {
+      if (!id) {
+        toast.error("Invalid product ID.");
+        navigate("/seller");
+        return;
+      }
+
       try {
         setIsLoading(true);
 
@@ -44,11 +51,12 @@ const EditProduct = () => {
           }),
         ]);
 
-        setCategories(categoryRes.data);
+        setCategories(categoryRes.data || []);
 
         const product = productRes.data;
         if (!product || productRes.data.success === false) {
           toast.error(productRes.data?.message || "⚠️ Product not found.");
+          navigate("/seller");
           return;
         }
 
@@ -73,195 +81,8 @@ const EditProduct = () => {
     };
 
     fetchData(adminData.token);
-  }, [id]);
+  }, [id, navigate]);
 
-  // const onSubmitHandler = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-
-  //   try {
-  //     const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
-  //     const token = adminData.token;
-
-  //     if (!token) {
-  //       toast.error("❌ Admin token missing");
-  //       setIsLoading(false);
-  //       return;
-  //     }
-
-  //     let uploadedImageUrls = [];
-  //     const hasNewImages = file.some(Boolean);
-
-  //     // ✅ Upload only if new images are selected
-  //     if (hasNewImages) {
-  //       const imageFormData = new FormData();
-  //       file.forEach((img) => {
-  //         if (img) imageFormData.append("files", img);
-  //       });
-
-  //       const uploadRes = await axios.post(
-  //         `${BASE_URL}/api/Products/upload-image`,
-  //         imageFormData,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       );
-
-  //       uploadedImageUrls = Array.isArray(uploadRes.data.url)
-  //         ? [...uploadRes.data.url]
-  //         : [uploadRes.data.url];
-
-  //       if (!uploadedImageUrls?.length) {
-  //         toast.error("❌ Image upload failed");
-  //         setIsLoading(false);
-  //         return;
-  //       }
-  //     }
-
-  //     const finalImages = existingImages
-  //       .map((img, index) => (file[index] ? uploadedImageUrls.shift() : img))
-  //       .filter(Boolean);
-
-  //     if (finalImages.length === 0) {
-  //       toast.error("❌ No product images provided");
-  //       setIsLoading(false);
-  //       return;
-  //     }
-
-  //     const payload = {
-  //       name,
-  //       description,
-  //       price,
-  //       stock_quantity,
-  //       is_active: true,
-  //       category_id: category,
-  //       images: finalImages,
-  //     };
-
-  //     const updateRes = await axios.put(
-  //       `${BASE_URL}/api/Products/updateProduct/${id}`,
-  //       payload,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (updateRes.data?.success) {
-  //       toast.success("✅ Product updated successfully");
-  //       navigate("/seller");
-  //     } else {
-  //       toast.error(updateRes.data.message || "Update failed");
-  //     }
-  //   } catch (error) {
-  //     console.error("Update failed:", error);
-  //     toast.error(error.response?.data?.message || "Something went wrong");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // const onSubmitHandler = async (e) => {
-  //   e.preventDefault();
-  //   setIsLoading(true);
-
-  //   try {
-  //     const adminData = JSON.parse(localStorage.getItem("admin") || "{}");
-  //     const token = adminData?.token;
-
-  //     if (!token) {
-  //       toast.error("❌ Admin token missing");
-  //       return;
-  //     }
-
-  //     // Validate fields
-  //     if (!name || !price || !category) {
-  //       toast.error("❌ Please fill all required fields");
-  //       return;
-  //     }
-
-  //     let uploadedImageUrls = [];
-  //     const hasNewImages = file.some(Boolean);
-
-  //     // Upload new images if provided
-  //     if (hasNewImages) {
-  //       const imageFormData = new FormData();
-  //       file.forEach((img) => {
-  //         if (img) imageFormData.append("files", img);
-  //       });
-
-  //       const uploadRes = await axios.post(
-  //         `${BASE_URL}/api/Products/upload-image`,
-  //         imageFormData,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       );
-
-  //       uploadedImageUrls = (
-  //         Array.isArray(uploadRes.data.url)
-  //           ? uploadRes.data.url
-  //           : [uploadRes.data.url]
-  //       ).filter(Boolean);
-
-  //       if (!uploadedImageUrls.length) {
-  //         toast.error("❌ Image upload failed");
-  //         return;
-  //       }
-  //     }
-
-  //     // Merge existing and new images
-  //     const finalImages = existingImages
-  //       .map((oldImg, i) => (file[i] ? uploadedImageUrls.shift() : oldImg))
-  //       .filter(Boolean);
-
-  //     if (!finalImages.length) {
-  //       toast.error("❌ No product images provided");
-  //       return;
-  //     }
-
-  //     const payload = {
-  //       name,
-  //       description,
-  //       price,
-  //       stock_quantity,
-  //       is_active: true,
-  //       category_id: category,
-  //       images: finalImages,
-  //     };
-
-  //     const updateRes = await axios.put(
-  //       `${BASE_URL}/api/Products/updateProduct/${id}`,
-  //       payload,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     if (updateRes.data?.success) {
-  //       toast.success("✅ Product updated successfully");
-  //       navigate("/seller");
-  //     } else {
-  //       toast.error(updateRes.data?.message || "Update failed");
-  //     }
-  //   } catch (error) {
-  //     console.error("Update failed:", error);
-  //     toast.error(error.response?.data?.message || "Something went wrong");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   const onSubmitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -276,7 +97,6 @@ const EditProduct = () => {
         return;
       }
 
-      // Validate fields
       if (!name || !price || !category) {
         toast.error("❌ Please fill all required fields");
         setIsLoading(false);
@@ -311,17 +131,13 @@ const EditProduct = () => {
         ).filter(Boolean);
 
         if (!uploadedImageUrls.length) {
-          toast.error("❌ Image upload failed");
-          setIsLoading(false);
-          return;
+          toast.error("❌ Image upload failed. Keeping existing images.");
         }
       }
 
       // Merge existing and new images
       const finalImages = existingImages
-        .map((oldImg, i) => {
-          return file[i] ? uploadedImageUrls[i] : oldImg;
-        })
+        .map((oldImg, i) => (file[i] ? uploadedImageUrls.shift() : oldImg))
         .filter(Boolean);
 
       if (!finalImages.length) {
@@ -375,7 +191,7 @@ const EditProduct = () => {
 
         {/* Image Upload */}
         <div>
-          <p className="text-base font-medium">Product Image</p>
+          <p className="text-base font-medium">Product Images</p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
             {Array(4)
               .fill("")
@@ -393,7 +209,7 @@ const EditProduct = () => {
                     }}
                   />
                   <img
-                    className="max-w-24 max-h-24 cursor-pointer object-cover border"
+                    className="max-w-24 max-h-24 cursor-pointer object-cover border rounded"
                     src={
                       file[index]
                         ? URL.createObjectURL(file[index])
