@@ -210,7 +210,9 @@ export const AppContextProvider = ({ children }) => {
         }
       );
 
+      fetchCart();
       console.log("Cart API response:", res.data);
+
       toast.success("Item added to cart successfully!");
       return res.data;
     } catch (error) {
