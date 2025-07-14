@@ -6,7 +6,7 @@ import { NavLink, Outlet, Link } from "react-router-dom";
 import { BASE_URL } from "../../../constant";
 
 const SellerLayout = () => {
-  const { navigate, setUser } = useAppContext();
+  const { setUser } = useAppContext();
 
   // const logout = async () => {
   //   try {
@@ -21,23 +21,38 @@ const SellerLayout = () => {
   //     toast.success(error.message);
   //   }
   // };
+  // const logout = async () => {
+  //   try {
+  //     await axios.post(
+  //       `${BASE_URL}/api/auth/logoutadmin`,
+  //       {},
+  //       { withCredentials: true } // send cookie
+  //     );
+
+  //     // 🧹 Clean frontend state
+  //     localStorage.removeItem("bearerToken");
+  //     localStorage.removeItem("user");
+  //     delete axios.defaults.headers.common["Authorization"];
+  //     setUser(null);
+
+  //     toast.success("Logged out successfully");
+  //     navigate("/");
+  //   } catch (err) {
+  //     console.error("Logout error:", err);
+  //     toast.error("Logout failed. Please try again.");
+  //   }
+  // };
   const logout = async () => {
     try {
-      // 🛑 Call backend to clear cookie
-      await axios.post(
-        `${BASE_URL}/api/auth/logoutadmin`,
-        {},
-        { withCredentials: true } // send cookie
-      );
-
       // 🧹 Clean frontend state
-      localStorage.removeItem("bearerToken");
       localStorage.removeItem("user");
+      localStorage.removeItem("admin");
       delete axios.defaults.headers.common["Authorization"];
       setUser(null);
 
       toast.success("Logged out successfully");
-      navigate("/");
+
+      window.location.reload();
     } catch (err) {
       console.error("Logout error:", err);
       toast.error("Logout failed. Please try again.");
