@@ -10,12 +10,18 @@ const MyOrders = () => {
   const { currency, user } = useAppContext();
   const navigate = useNavigate();
   const fetchMyOrders = async () => {
-    try {
-      const token = localStorage.getItem("bearerToken");
+    const userData = localStorage.getItem("user");
 
+    if (!userData) {
+      alert("❌ User not logged in");
+      return;
+    }
+
+    const user = JSON.parse(userData);
+    try {
       const { data } = await axios.get(`${BASE_URL}/api/orders/user`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
         },
       });
 
