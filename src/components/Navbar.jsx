@@ -277,25 +277,46 @@ const Navbar = () => {
   } = useAppContext();
 
   // ✅ Logout function
+  // const logout = async () => {
+  //   try {
+  //     // 🛑 Call backend to clear cookie
+  //     await axios.post(
+  //       `${BASE_URL}/api/auth/logout`,
+  //       {},
+  //       { withCredentials: true } // send cookie
+  //     );
+
+  //     // 🧹 Clean frontend state
+  //     localStorage.removeItem("bearerToken");
+  //     localStorage.removeItem("user");
+  //     delete axios.defaults.headers.common["Authorization"];
+  //     setUser(null);
+  //     setCartItems([]);
+  //     setCount(0);
+
+  //     toast.success("Logged out successfully");
+  //     navigate("/");
+  //   } catch (err) {
+  //     console.error("Logout error:", err);
+  //     toast.error("Logout failed. Please try again.");
+  //   }
+  // };
+
+  //a.
   const logout = async () => {
     try {
-      // 🛑 Call backend to clear cookie
-      await axios.post(
-        `${BASE_URL}/api/auth/logout`,
-        {},
-        { withCredentials: true } // send cookie
-      );
-
       // 🧹 Clean frontend state
-      localStorage.removeItem("bearerToken");
       localStorage.removeItem("user");
+      localStorage.removeItem("admin");
       delete axios.defaults.headers.common["Authorization"];
       setUser(null);
       setCartItems([]);
       setCount(0);
 
       toast.success("Logged out successfully");
-      navigate("/");
+
+      // Refresh the page
+      window.location.reload();
     } catch (err) {
       console.error("Logout error:", err);
       toast.error("Logout failed. Please try again.");
