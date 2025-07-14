@@ -111,9 +111,17 @@ const Cart = () => {
   const handlePlaceOrder = async () => {
     if (!selectedAddress || cartItems.length === 0) return;
 
-    try {
-      const user = localStorage.getItem("user");
+    // Get user token from localStorage
+    const userData = localStorage.getItem("user");
 
+    if (!userData) {
+      alert("❌ User not logged in");
+      return;
+    }
+
+    const user = JSON.parse(userData);
+
+    try {
       const orderPayload = {
         address_id: selectedAddress._id,
         payment_method: paymentMethod.toLowerCase(),
@@ -127,23 +135,30 @@ const Cart = () => {
         `${BASE_URL}/api/orders`,
         orderPayload,
         {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: {
+            Authorization: `Bearer ${user.token}`, // ✅ Added token here
+          },
         }
       );
 
       if (response.data.message === "Order placed") {
-        alert("Order placed successfully!");
+        alert("✅ Order placed successfully!");
 
+        // Clear the cart
         await axios.delete(`${BASE_URL}/api/cart/clear`, {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: {
+            Authorization: `Bearer ${user.token}`, // ✅ Added token here too
+          },
         });
 
         setCartItems([]);
         setCount(0);
         navigate("/my-orders");
+      } else {
+        alert(`❌ Failed: ${response.data.message || "Unexpected error"}`);
       }
     } catch (error) {
-      console.error("Order placement failed:", error);
+      console.error("❌ Order placement failed:", error);
       alert("Something went wrong while placing the order.");
     }
   };
